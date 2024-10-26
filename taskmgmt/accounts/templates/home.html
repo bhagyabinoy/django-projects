@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+	
+{% block title %}   
+	<title>Homepage</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+{% block content %}
+
+	<br> <br>
+	
+	<center> <h1>TASK MANAGEMENT SYSTEM</h1> <br>
+	
+	<h2> Welcome {{request.user.username}} </h2>
+	</center>
+
+	<p style="text-align:right">
+		<a class = "btn btn-danger m-3 p-2" href="{% url 'signout' %}">Signout</a>
+	</p>
+
+	
+	 <div class="text-center">
+		<p>
+		  <a href="{% url 'userslist' %}">User- List View</a></p><br>
+		
+		  {% comment %} <a href="{% url 'partialupdate_user' user.id %}">User- Partial Update</a></p><br>
+		  <a href="{% url 'delete_user' user.id %}">User- Delete</a></p><br> {% endcomment %}
+	  </div> 
+
+	
+	<script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+
+{% endblock %}  
+

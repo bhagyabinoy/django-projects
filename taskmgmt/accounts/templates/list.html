@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    {% block title %}
+    <title>List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    {% endblock %}
+
+    {% block content %}
+    <p style="text-align:right">
+    <a class = "btn btn-danger m-3 p-2" href="{% url 'home' %}">Back Home</a> </p> 
+    <center> <h1 class="page-header">TASK MANAGEMENT SYSTEM</h1> </center>
+    <p style="text-align:left">
+    <a class = "btn btn-success m-3 p-2" href="{% url 'signup' %}">Create new user</a>  </p>
+
+    <div>
+      <table class="table" id="usertable">
+        <thead>
+          <tr>
+            
+            <th scope="col">sl no.</th>
+            <th scope="col">id</th>
+            <th scope="col">first_name</th> 
+            <th scope="col">last_name</th> 
+            <th scope="col">username</th>
+            <th scope="col">email</th> 
+            <th scope="col">update</th>
+            <th scope="col">delete</th>  
+    
+          </tr>
+        </thead>
+
+        <tbody id="tbody">
+            
+          {% for profile in data %}
+            <tr>
+              <th scope="row">{{forloop.counter}}</th>
+              <td class="id">{{ profile.id }}</td>
+              <td>{{ profile.first_name }}</td>
+              <td>{{ profile.last_name }}</td> 
+              <td>{{ profile.username }}</td>
+              <td>{{ profile.email }}</td>
+              
+              <td> <button data = "{{ profile.id }}" class ="btn btn-sm btn-warning update"> update </button> </td> 
+              <td> <button data = "{{ profile.id }}" class ="btn btn-sm btn-danger delete"> delete </button> </td>
+            </tr>
+          {% endfor %} 
+
+        </tbody>
+      </table> 
+    </div>
+   
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+	  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+	  
+    <script>
+      $( document ).ready(function() {
+        console.log("success");
+        $.ajax({
+          url : "{% url 'userslist' %}", 
+          type : "GET",
+          data : {data},
+          success:function(response){
+           
+              console.log("success");
+           
+            }
+          })   
+    });
+    /delete function
+   
+    $('.delete').click(function(){
+
+        var confirmation = confirm("are you sure you want to delete this user?");
+    
+        if (confirmation) {
+        var delete_id = $(this).attr('data'); 
+        console.log(delete_id);
+        data = {
+          delete_id : delete_id,
+        };
+
+        delthis=this;
+
+        $.ajax({
+          url : "{% url 'delete' %}", 
+          type : "GET",
+          data : data,
+          success:function(response){
+            if(response.status == 1){
+              console.log("data deleted successfully.");
+              alert('user deleted successfully.');
+              $(delthis).closest("tr").fadeOut();
+              }
+            }
+          })   
+            
+        }
+    })
+       
+
+    {% comment %} //view function
+    function viewuser(view_id){
+        $.ajax({
+            url : "{% url 'detailview' %}", 
+            type : "GET",
+            data : {
+                "view_id": view_id,
+                },
+            success:function(response){
+                console.log(response.status)
+                $('#message').text(response.status)
+                $('#message').addClass("p-2");
+                if(response.status == "successful"){
+                    $('#message').addClass("bg-success");
+                      window.location="{% url 'home' %}";
+                  }
+                else{
+                      $('#message').addClass("bg-danger");
+                  }
+
+              }    
+        })
+      }
+          
+    //view call
+    $('.view').click(function(){
+        var view_id = $(this).attr('data')
+        console.log(view_id)
+        viewuser(view_id)
+      })
+
+    //updateobject function
+    function updateobject(object){
+      var first_name = item.find('.first_name').text()
+      var last_name = item.find('.last_name').text()
+      var username = item.find('.username').text()
+      var email = item.find('.email').text()
+      var update_id = object.find('.update').attr('data')
+      console.log(first_name, update_id)
+    }
+
+    //update call
+    $('.update').click(function(){
+      var object = $(this).closest('tr')
+      updateobject(object)
+    }) {% endcomment %}
+	  </script>
+  </center>
+  {% endblock %}
+
+
+

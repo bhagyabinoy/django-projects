@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title>Loginpage</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %} 
+{% block content %}
+    <center >
+    <br>
+    <br>
+        <h1 class = alert alert-danger>TASK MANAGEMENT SYSTEM</h1> 
+    <br>
+    <br>
+
+<div class="container border p-4 rounded col-4">
+<h1>Login</h1>
+<br>
+
+<form method = "POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    Username
+    <input type="text" name="username" />
+    <br> <br>
+    Password 
+    <input type="password" name="password" />
+    <br>
+    <br>
+    <input class ="btn btn-success m-3 p-2 " type="submit" value= "Login" />
+    <br>
+    <br>
+    <div class="text-center">
+        <p>Not a user? 
+          <a href="{% url 'signup' %}">Sign Up</a></p>
+    </div>
+
+</form>
+</div>
+<center >
+{% endblock %}
+
+

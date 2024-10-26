@@ -9,3 +9,4 @@ This repository contains various Django projects, each showcasing different func
 2. **Django chat application**
 3. **School Management System**
 4. **Ticket Issuance System**
+5. **Task Management System**

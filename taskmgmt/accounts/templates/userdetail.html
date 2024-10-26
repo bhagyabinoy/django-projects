@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Detailview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<center> 
+    <br> <br>
+    <h1>TASK MANAGEMENT SYSTEM</h1> <br>
+    <h1 class="page-header">User Detail</h1> 
+    <div>
+        <table class="table" id="usertable">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">first_name</th> 
+                    <th scope="col">last_name</th> 
+                    <th scope="col">username</th>
+                    <th scope="col">email</th> 
+                    <th scope="col">update</th>
+                    <th scope="col">delete</th>
+                </tr>
+            </thead>
+    
+            <tbody>
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td> <button data = "{{ user.id }}" class ="btn btn-warning update"> update </button> </td>
+                    <td> <button data = "{{ user.id }}" class ="btn btn-danger delete"> delete </button> </td> 
+                </tr>
+            <tbody>
+        </table>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+    <script>
+        //data table 
+		$(document).ready( function () {
+            $('#usertable').DataTable();
+        } );
+    </script>
+
+</center> 
+
+{% endblock %}
+
+
