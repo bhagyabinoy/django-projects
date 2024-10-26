@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>chartjs</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container-fluid">
+	<center class="row">
+		<h1> <b>chartJS</b></h1>
+	</center>
+	<hr/>
+
+	<div class="row">
+		<div class="col-md-6">
+		<canvas id="Chartline"></canvas>
+		</div>
+		<div class="col-md-6">
+		<canvas id="ChartBar"></canvas>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<canvas id="piechart"></canvas>
+		</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+	<script>
+
+
+		$.ajax({
+			method: "GET",
+			url: 'http://127.0.0.1:8000/piechart/?date=2023-02-13&user=2',
+			success: function(data) {
+				drawLineGraph(data, 'Chartline');
+				drawBarGraph(data, 'ChartBar');
+				drawPiechartGraph(data, 'piechart');
+
+			},
+			error: function(error_data) {
+				console.log(error_data);
+			}
+			})
+
+
+		function drawLineGraph(data, id) {
+			var labels = data.labels;
+			var chartLabel = data.chartLabel;
+			var chartdata = data.chartdata;
+			var ctx = document.getElementById(id).getContext('2d');
+			var chart = new Chart(ctx, {
+				// The type of chart 
+				type: 'line',
+
+				// The data 
+				data: {
+				labels: labels,
+				datasets: [{
+					label: chartLabel,
+					backgroundColor: 'rgb(255, 100, 200)',
+					borderColor: 'rgb(55, 99, 132)',
+					data: chartdata,
+				}]
+				},
+
+			// Configuration
+			options: {
+			scales: {
+				xAxes: [{
+				display: true
+				}],
+				yAxes: [{
+				ticks: {
+					beginAtZero: true
+				}
+				}]
+			}
+			}
+
+		});
+		}
+
+		function drawPiechartGraph(data, id) {
+			console.log(data)
+			console.log(data.labels.length)
+			var labels = data.labels;
+			var chartLabel = data.chartLabel;
+			var chartdata = data.chartdata;
+			var barColors = generateRandomColors(data.labels.length)
+			new Chart("piechart", {
+			type: "pie",
+			
+			data: {
+				labels: labels ,
+				datasets: [{backgroundColor: barColors,data: chartdata }]
+			},
+			options: {title: {display: true,text: "Calories Consumed"}}
+			});
+			}
+		
+
+		function generateRandomColors(numColors) {
+			var colors = [];
+			for (var i = 0; i < numColors; i++) {
+				var r = Math.floor(Math.random() * 255);
+				var g = Math.floor(Math.random() * 255);
+				var b = Math.floor(Math.random() * 255);
+				var color = "rgba(" + r + "," + g + "," + b + ",0.8)";
+				colors.push(color);
+			}
+			return colors;
+			}
+
+
+		function drawBarGraph(data, id) {
+			var labels = data.labels;
+			var chartLabel = data.chartLabel;
+			var chartdata = data.chartdata;
+			var ctx = document.getElementById(id).getContext('2d');
+			var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: {
+				labels: labels,
+				datasets: [{
+					label: chartLabel,
+					data: chartdata,
+					backgroundColor: generateRandomColors(data.labels.length),
+					borderColor: [
+					'rgba(255, 99, 132, 1)',
+					'rgba(54, 162, 235, 1)',
+					'rgba(255, 206, 86, 1)',
+					'rgba(75, 192, 192, 1)',
+					'rgba(153, 102, 255, 1)',
+					'rgba(255, 159, 64, 1)'
+					],
+					borderWidth: 1
+				}]
+				},
+				options: {
+				scales: {
+					yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+					}]
+				}
+			}
+		});
+		}
+
+
+</script>
+</body>
+
+</html>

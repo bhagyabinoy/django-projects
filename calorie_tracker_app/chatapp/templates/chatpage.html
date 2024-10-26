@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1> Chat App</h1>
+    <div id="messages"></div>
+    <form id="message-form">
+        <input type="text" id="message-input" autofocus>
+        <input type="submit" value="Send">
+    </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var socket = new WebSocket('ws://127.0.0.1:8000/ws/chat/');
+
+            socket.onmessage = function(response) {
+                console.log(response)
+                var message = response.data;
+                console.log("message     ",message);
+                $('#messages').append('<p>' + message + '</p>');
+            };
+
+            $('#message-form').on('submit', function(event) {
+                event.preventDefault();
+                var messageInput = $('#message-input');
+                var message = messageInput.val();
+                socket.send(message);
+                messageInput.val('');
+            });
+        });
+    </script>
+</body>
+</html>

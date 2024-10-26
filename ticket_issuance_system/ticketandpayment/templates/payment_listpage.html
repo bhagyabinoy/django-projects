@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>Payment List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+    <style>
+        body {  
+            background: linear-gradient(to bottom left, white 70%, lightblue);
+            font-family: Roboto, sans-serif;
+            }
+        .vertical-nav {
+          height: 100vh;
+          border-right: 2px solid #ccc; 
+          padding-right: 10px; 
+        } 
+        h1 {  
+            color: blue;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }            
+        h3 {
+            text-align: center;
+          }
+          table {
+			width: 50%;
+		}
+
+		th {
+			background: #f1f1f1;
+			font-weight: bold;
+			text-align: center;
+			padding: 6px;
+		}
+
+		td {
+			background: #f9f9f9;
+			text-align: center;
+			padding: 6px;
+		}
+
+
+        .previous {
+        text-align: left;
+        }
+        
+        .next {
+        text-align: right;
+        }
+
+    </style>
+	
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 vertical-nav">
+                <ul class="nav nav-pills flex-column">
+                    <br> <br> <br>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/home/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/profile/">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/ticket/event/">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="http://127.0.0.1:8000/ticket/paymentlistingpage/">Payment History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/chat/">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/passwordchange/">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout text-danger" href="#">Logout</a>
+                    </li>  
+                </ul>
+            </div>
+            <div class="col-lg-10">
+                <br>
+                <h1 style="color:blue;text-align:center" class="horizontal-line">TICKET ISSUANCE SYSTEM </h1> 
+                <br>
+                <h3> Payment History </h3>
+                <br>
+
+                <div class="form-group">
+                    <label for="paymentFilter">Filter by Payment Status:</label>
+                    <select class="form-control" id="paymentFilter">
+                        <option value="">All</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <table class="table table-hover" id="usertable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No.</th>
+                            <th scope="col">Event Name</th>
+                            <th scope="col">Event Start Time</th> 
+                            <th scope="col">Event End Time</th> 
+                            <th scope="col">No:of Seats</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">Payment Status</th>
+                            <th class="text-center" colspan = "1">Print Ticket</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"> </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    </div>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script>
+          
+    //LOGOUT
+    $('.logout').click(function(){
+        var confirmation = confirm("Are you sure you want to logout?");
+        if (confirmation) {
+        $.ajax({
+            url: 'http://127.0.0.1:8000/logout/',
+            type: 'GET',
+            success:  function (Response) {
+                          alert(Response.message);;
+                          window.location.href='http://127.0.0.1:8000/loginpage/';
+            }
+        }) 
+        }
+    });
+
+    $(document).ready(function() {
+
+        var currentUrl = window.location.href;
+          
+        $('.navbar-nav .nav-link').each(function() {
+          var linkUrl = $(this).attr('href');
+          if (currentUrl.includes(linkUrl)) {
+            $(this).addClass('active');
+          }
+        });
+        fetchPaymentHistory();
+        $("#paymentFilter").change(function () {
+                var filterValue = $(this).val();
+                if (filterValue === "") {
+                    $("#tableBody tr").show();
+                } else {
+                    $("#tableBody tr").hide();
+                    $("#tableBody td:nth-child(7):contains(" + filterValue + ")").parent().show();
+                }
+            });
+
+    })
+
+        function fetchPaymentHistory(){
+        var user_id = localStorage.getItem('userId');
+        console.log(user_id);
+        var params = {
+                    'user_id': user_id, 
+                };
+        var queryString = $.param(params);
+        
+        $.ajax({
+            headers: {
+                    'Content-Type': 'application/json',
+                    },
+            url: 'http://127.0.0.1:8000/ticket/retrievepayments/?' + queryString,
+            type: 'GET',
+            success: function (response) {
+                console.log(response);
+                data = response.data;
+                tableDataDisplay(data);	           
+            },
+            error: function (response) {
+                        console.log(response.status);
+                    
+                }
+            })
+        // })
+    
+        }
+    //TABLE DISPLAY
+    function tableDataDisplay(response) {
+            
+        var tableData = "";
+        for (var i=0; i<response.length; i++) {
+            var id=response[i].event_booking;
+            tableData+= '<tr>';      
+            tableData+= '<td>'+ [i+1] + '</td>';                                                          
+            tableData+= '<td>'+response[i].event_name+ '</td>';
+            tableData+= '<td>'+response[i].event_start_time + '</td>';
+            tableData+= '<td>'+response[i].event_end_time + '</td>';
+            tableData+= '<td>'+response[i].total_booked_seats  + '</td>';
+            tableData+= '<td>'+response[i].amount + '</td>';
+            tableData+= '<td>'+response[i].status  + '</td>';
+            tableData+= '<td> <input  class= "btn btn-success" type="button" value="Print" id="'+id+'" onclick="printticket(id)"/> </td>';
+            tableData+= '</tr>';
+            }
+            document.getElementById("tableBody").innerHTML=tableData;
+        }
+                
+
+    function printticket(id) {
+        alert(id);
+        var user_id = localStorage.getItem('userId');    
+        console.log(user_id);
+        var params = {
+                    'user_id': user_id, 
+                    'booking_id': id,
+                };
+        var queryString = $.param(params); 
+        var  url = 'http://127.0.0.1:8000/ticket/generate-pdf/?' + queryString
+        console.log(url);
+        
+        $.ajax({
+                type: 'GET',
+                // headers: {
+                // 'Content-Type': 'application/json',
+                // },
+                url: 'http://127.0.0.1:8000/ticket/generate-pdf/?' + queryString,
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success:function(blob){
+                        //console.log(response);
+                        console.log("Successs");
+                        //var blob = new Blob([Response], { type: 'application/pdf' });
+                        var downloadUrl = URL.createObjectURL(blob);
+                        var a = document.createElement("a");
+                        a.href = downloadUrl;
+                        a.download = "ticket.pdf";
+                        document.body.appendChild(a);
+                        a.click(); 
+                    },
+                error: function (response) {
+                        console.log("Fail");
+             
+                    }  
+                }) 
+            }
+
+
+    </script>
+</body>
+</html>

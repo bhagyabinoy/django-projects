@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>Event Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+    <style>
+        body {  
+            background: linear-gradient(to bottom left, white 70%, lightblue);
+            font-family: Roboto, sans-serif;
+              }
+        .vertical-nav {
+          height: 100vh;
+          border-right: 2px solid #ccc; 
+          padding-right: 10px; 
+        } 
+        h1 {  
+            color: blue;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }   
+        .center-div {
+            text-align: center;
+        }
+        h3 {
+            text-align: center;
+          }
+          table {
+			width: 50%;
+		}
+
+		th {
+			background: #f1f1f1;
+			font-weight: bold;
+			text-align: center;
+			padding: 6px;
+		}
+
+		td {
+			background: #f9f9f9;
+			text-align: center;
+			padding: 6px;
+		}
+
+        {box-sizing: border-box;}
+
+        .previous {
+        text-align: left;
+        }
+        
+        .next {
+        text-align: right;
+        }
+
+        .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 23px;
+        right: 28px;
+        width: 280px;
+        }
+
+        .form-popup {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 12px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        }
+
+        .form-container {
+        max-width: 400px;
+        padding: 10px;
+        background-color: white;
+        }
+
+        .form-container input[type=text], .form-container input[type=password] {
+        width: 100%;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        }
+
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+        }
+
+        .form-container .btn {
+        background-color: #04AA6D;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom:10px;
+        opacity: 0.8;
+        }
+
+        .form-container .cancel {
+        background-color: red;
+        }
+
+        .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+        }
+    </style>
+	
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 vertical-nav">
+                <ul class="nav nav-pills flex-column">
+                    <br> <br> <br>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/adminhome/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/user/">Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/admineventpage/">Events</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/addeventpage/">New event Item</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/adminrooms/">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/passwordchange/">Change Password</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link logout text-danger" href="#">Logout</a>
+                    </li>
+            </ul>
+        </div>
+        <div class="col-lg-10">
+            <br>
+            <h1 style="color:blue;text-align:center">TICKET ISSUANCE SYSTEM  </h1> 
+            <br>
+            
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="input-group">
+                        <span class="input-group-text">Search Key</span>
+                        <input type="text" id="searchKeyInput" class="form-control" placeholder="Enter event name to filter">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <button id="searchButton" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+
+            <br>
+            <table class="table table-striped" id="eventtable">
+                <thead>
+                    <tr>
+                        <th scope="col">Sl No.</th>
+                        <th scope="col">Name</th> 
+                        <th scope="col">Image</th> 
+                        <th scope="col">Description</th>
+                        <th scope="col">Start Time </th>
+                        <th scope="col">End Time</th>
+                        <th class="text-center" colspan = "2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"> </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+
+</div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+    <script>
+
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/event/list/',
+                type: 'GET',
+                success: function (response) {
+                            console.log(response);
+                            data = response.data
+                            tableDataDisplay(data);	           
+                },
+                error: function (response) {
+                            console.log(response.status);
+                      
+                }
+            })
+        })
+        //TABLE DISPLAY
+        function tableDataDisplay(response) {
+            //ImageUrl =  "http://127.0.0.1:8000" 
+            var tableData = "";
+            for (var i=0; i<response.length; i++) {
+                var update_id=response[i].id;
+                var delete_id=response[i].id;
+                tableData+= '<tr>';      
+                tableData+= '<td>'+ [i+1] + '</td>';        
+                tableData+= '<td>'+response[i].event_name + '</td>';
+                if (response[i].image) {
+                    tableData += '<td><img src="' + response[i].image + '" height="100" width="120"></td>';
+                } else {
+                    tableData += '<td><img src="http://127.0.0.1:8000/images/default.jpeg" height="100" width="120"></td>';
+                }
+                tableData+= '<td>'+response[i].description  + '</td>';
+                tableData+= '<td>'+response[i].event_end_time + '</td>';
+                tableData+= '<td>'+response[i].event_start_time + '</td>';
+                tableData+= '<td> <input class= "btn btn-primary" type="button" value="View" id="'+update_id+'" onclick="viewevent(id)"/> </td>';
+                tableData+= '<td> <input  class= "btn btn-danger" type="button" value="Delete" id="'+delete_id+'" onclick="deleteevent(id)"/> </td>';
+                tableData+= '</tr>';
+                }
+                document.getElementById("tableBody").innerHTML=tableData;
+            }
+        
+            function filterEvents() {
+                    const searchKey = document.getElementById('searchKeyInput').value.trim().toLowerCase();
+                    const filteredData = data.filter(event => event.event_name.toLowerCase().includes(searchKey));
+                    tableDataDisplay(filteredData);
+                    }
+
+                document.getElementById('searchButton').addEventListener('click', function() {
+                    filterEvents();
+                });
+
+        //LOGOUT
+
+        $('.logout').click(function(){
+            var confirmation = confirm("Are you sure you want to logout?");
+            if (confirmation) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/logout/',
+                type: 'GET',
+                success:  function (Response) {
+                                alert(Response.message);;
+                                window.location.href='http://127.0.0.1:8000/ticket/adminlogin/';
+                }
+            }) 
+            }
+        });
+
+
+        //DELETE FUNCTION
+        function deleteevent(id) {
+
+            var confirmation = confirm("Are you sure you want to delete?");
+            if (confirmation) {
+                $.ajax({
+                    url : "http://127.0.0.1:8000/event/delete/"+id+'/',
+                    type : "GET",
+                    success:function(response){
+                            alert("event Item Removed Successfully")
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/event/list/',
+                                type: 'GET',
+                                success: function (response) {
+                                        data = response.data;
+                                        tableDataDisplay(data);	    
+                                        }         
+                                })
+                        },
+                    error: function (response) {
+                            console.log("An error occured")
+
+                        }  
+                    }) 
+                }
+        }
+    
+        function viewevent(id) {
+
+                localStorage.setItem("event_id", id)
+                var retrieved_id = localStorage.getItem("event_id")
+                console.log("event_id",retrieved_id);
+                window.location.href='http://127.0.0.1:8000/eventdetailpage/';
+
+            }
+    
+    </script>
+
+</body>
+</html>

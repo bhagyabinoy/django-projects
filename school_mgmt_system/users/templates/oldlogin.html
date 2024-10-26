@@ -1,0 +1,104 @@
+<! DOCTYPE html>  
+<html lang="en" >  
+<head>  
+    <meta charset="UTF-8">  
+    <title> Login Page </title>  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
+
+    <style>  
+        body {  
+            background: rgb(131, 170, 203);
+            background: linear-gradient(90deg, lightblue, white);
+            }  
+        h1 {  
+            color: red;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }  
+        a {  
+        color: #333;  
+        }  
+        a:hover {  
+        color: #E8D426;  
+        text-decoration: none;  
+        }  
+        .form-control:focus {  
+            color: #000;  
+            background-color: #fff;  
+            border: 2px solid #E8D426;  
+            outline: 0;  
+            box-shadow: none;  
+        }  
+        .btn {  
+        
+        border: #E8D426;  
+        }  
+        .btn:hover {  
+        background: #28a745;  
+        border: #E8D426;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="pt-5">  
+        <h1 class="text-center"> STUDENT MANAGEMENT SYSTEM </h1>  
+        <div class="container">  
+            <div class="row">  
+                <div class="col-md-5 mx-auto">  
+                    <div class="card card-body">  
+                        <form >
+                      
+                
+                            <div class="form-group required">  
+                                <label for="email"> Email </label>  
+                                <input type="email" class="form-control text-lowercase" id="id_email">  
+                            </div>      
+
+                            <div class="form-group required">  
+                                <label class="d-flex flex-row align-items-center" for="password"> Password   
+                                <a class="ml-auto border-link small-xl" href="http://127.0.0.1:8000/users/resetpassword/"> Forget Password? </a> </label>   
+                                <input type="password" class="form-control" id="id_password">  
+                            </div>   
+
+                            <div class="form-group pt-1">  
+                                <button class="btn btn-primary btn-block" type="submit" onclick ="userlogin()"> Log In </button>  
+                            </div>  
+
+                        </form>  
+                        <p class="small-xl pt-3 text-center">  
+                            <span class="text-muted"> Not a user? </span>  
+                            <a href="http://127.0.0.1:8000/users/signup/"> Sign up </a>  
+                        </p>  
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script>
+    
+    function userlogin(){
+        var get_email = $('#id_email').val();
+        var get_password = $('#id_password').val();
+        alert(get_email)
+        
+        $.ajax({
+            url : "http://127.0.0.1:8000/users/loginview/",
+            type : "POST",
+            data : {
+                    email: get_email,
+                    password: get_password,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+            success: function (response) {
+                    console.log(response)
+                    alert("Logged in successfully")
+                    window.location = "http://127.0.0.1:8000/";	           
+                    }, 
+         })
+    }
+    </script>
+</body>  
+</html> 

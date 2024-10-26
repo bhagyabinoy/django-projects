@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        body {  
+            background: linear-gradient(to bottom left, white 70%, lightblue);
+            font-family: Roboto, sans-serif;
+            }
+        h1 {  
+            color: blue;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }  
+        .product-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <h1 class="text-center"> TICKET ISSUANCE SYSTEM</h1>  <br/>
+    <h3>Stripe Price List</h3>
+    <div id="productList"></div>
+    </center>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/ticket/productlist/',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'true') {
+                        displayProductList(data.data);
+                    } else {
+                        alert('Failed to retrieve product list.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while fetching the data.');
+                    console.log(error);
+                }
+            });
+
+            $('.add-button').click(function() {
+                console.log('button clicked');
+                alert('Add button clicked');
+            var product = $(this).data('product');
+            var confirmationMessage = 'Do you want to add ' + product.unit_amount+ ' to the event?';
+            var isConfirmed = confirm(confirmationMessage);
+
+            if (isConfirmed) {
+                localStorage.setItem('selectedprice', product.eventpricing_id);
+                var selectedprice = localStorage.getItem('selectedprice');
+                console.log(selectedprice,"------------------------");
+                alert('Price added to event successfully');
+            } else {
+                alert('No price chosen.');
+            }})
+        });
+
+        function displayProductList(products) {
+            var productListDiv = $('#productList');
+
+            $.each(products, function(index, product) {
+                var productCard = $('<div class="product-card"></div>');
+                productCard.append('<h3>' + product.name + '</h3>');
+                productCard.append('<p>Stripe Product Id:   ' + product.eventpricing_id + '</p>');
+                productCard.append('<p>Id of price:   ' + product.price_id + '</p>');
+                productCard.append('<p>Description:   ' + product.description + '</p>');
+                productCard.append('<p>Price: ' + product.unit_amount + ' ' + product.currency + '</p>');
+                var addButton = $('<button class="add-button">Add</button>');
+                productCard.append(addButton);
+                productListDiv.append(productCard);
+            });
+        }
+    </script>
+</body>
+</html>

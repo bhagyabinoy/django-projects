@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    h1 {
+      color: blue;
+      padding-bottom: 2rem;
+      font-weight: bold;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .profile-details {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .links {
+      display: flex;
+      align-items: center;
+    }
+
+    .profile-label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .update-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <br>
+  <h1 style="color:blue;text-align:center">TICKET ISSUANCE SYSTEM</h1>
+  <br>
+
+  <div class="links">
+    <a class="nav-link back text-danger" href="#">Back</a>
+  </div>
+  <center>
+ 
+  <p>Update your date of birth, or city by clicking on the respective fields, and then saving the changes using the "Update Profile" button.</p>
+</center>
+  <div class="container" id="profile-details-container">
+    <div class="profile-label">First Name</div>
+    <div class="profile-details"  id="first_name">First Name</div>
+
+
+    <div class="profile-label">Last Name</div>
+    <div class="profile-details"  id="last_name">Last Name</div>
+
+    <div class="profile-label">Email</div>
+    <div class="profile-details" id="email">Email</div>
+
+    <div class="profile-label">Date of Birth</div>
+    <input class="profile-details" type="date" id="date_of_birth" value="YYYY-MM-DD">
+    <!-- <div class="profile-details" contenteditable="true" id="date_of_birth">Date of Birth</div> -->
+
+    <div class="profile-label">City</div>
+    <div class="profile-details" contenteditable="true" id="city">City</div>
+  </div>
+
+  <button class="update-button" onclick="updateProfile()">Update Profile</button>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+  <script>
+    $('.back').click(function() {
+      window.location.href = 'http://127.0.0.1:8000/profile/';
+    });
+
+    $(document).ready(function() {
+      var user_id = localStorage.getItem("userId");
+      console.log(user_id);
+      $.ajax({
+        url: 'http://127.0.0.1:8000/profile/detail/' + user_id + '/',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          console.log(response);
+          response = response.data;
+          
+          $("#first_name").text(response.first_name);
+          $("#last_name").text(response.last_name);
+          $("#email").text(response.email);
+          $("#date_of_birth").val(response.date_of_birth);
+          // $("#date_of_birth").text(response.date_of_birth);
+          $("#city").text(response.city);
+          
+        },
+        error: function() {
+          console.error('Failed to fetch profile details.');
+          alert('Failed to update profile details, please try again');
+        }
+      });
+    });
+
+    function updateProfile() {
+      var newDateOfBirth = $("#date_of_birth").val();
+      var newCity = $("#city").text();
+
+      var updatedProfile = {
+        "date_of_birth": newDateOfBirth,
+        "city": newCity
+      };
+
+      var csrftoken = getCookie('csrftoken');
+
+      var user_id = localStorage.getItem("userId");
+      $.ajax({
+        url: 'http://127.0.0.1:8000/profile/update/' + user_id + '/',
+        method: 'PATCH',
+        data: updatedProfile,
+        dataType: 'json',
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        },
+        success: function(response) {
+          console.log(response);
+          response = response.data;
+          alert("Profile updated successfully")
+        },
+        error: function() {
+          console.error('Failed to update profile details.');
+        }
+      });
+    }
+
+    function getCookie(name) {
+      var value = "; " + document.cookie;
+      var parts = value.split("; " + name + "=");
+      if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+  </script>
+</body>
+</html>

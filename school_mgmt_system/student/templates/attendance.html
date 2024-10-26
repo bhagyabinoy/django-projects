@@ -1,0 +1,367 @@
+<html>
+    <head>
+        <style>
+            body{
+                background: rgb(131, 170, 203);
+                background: linear-gradient(90deg, lightblue, white);
+            }
+    
+            .div-1 {
+                background-color: #EBEBEB;
+            }
+            table {
+              width: 50%;
+            }
+            th {
+              background: #f1f1f1;
+              font-weight: bold;
+              text-align: center;
+              padding: 6px;
+            }
+            td {
+              background: #f9f9f9;
+              text-align: center;
+              padding: 6px;
+            }
+        
+            {box-sizing: border-box;}
+        
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        .open-button {
+          background-color: #555;
+          color: white;
+          padding: 16px 20px;
+          border: none;
+          cursor: pointer;
+          opacity: 0.8;
+          position: fixed;
+          bottom: 23px;
+          right: 28px;
+          width: 280px;
+        }
+        
+        /* The popup form - hidden by default */
+        .form-popup {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          right: 12px;
+          border: 3px solid #f1f1f1;
+          z-index: 9;
+        }
+        
+        /* Add styles to the form container */
+        .form-container {
+          max-width: 400px;
+          padding: 10px;
+          background-color: white;
+        }
+        
+        /* Full-width input fields */
+        .form-container input[type=text], .form-container input[type=password] {
+          width: 100%;
+          padding: 5px;
+          margin: 5px 0 22px 0;
+          border: none;
+          background: #f1f1f1;
+        }
+        
+        /* When the inputs get focus, do something */
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+          background-color: #ddd;
+          outline: none;
+        }
+        
+        /* Set a style for the submit/login button */
+        .form-container .btn {
+          background-color: #04AA6D;
+          color: white;
+          padding: 16px 20px;
+          border: none;
+          cursor: pointer;
+          width: 100%;
+          margin-bottom:10px;
+          opacity: 0.8;
+        }
+        
+        /* Add a red background color to the cancel button */
+        .form-container .cancel {
+          background-color: red;
+        }
+        
+        /* Add some hover effects to buttons */
+        .form-container .btn:hover, .open-button:hover {
+          opacity: 1;
+        }
+    
+        </style>
+        <title>attendance</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <head>
+    <body>
+        <br> 
+        <center> <h1 style="color:red;">STUDENT MANAGEMENT SYSTEM</h1> </center>
+        <br>    <!-- Add Button -->
+        <p style="text-align:right">
+          <button class ='btn btn-primary m-3 p-2 mark'>Mark Attendance </button>
+        </p>
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <h5>Class</h5> 
+                <input type="number" id="Cinput" onkeyup="classFunction()" placeholder="Search for class" title="Type in a class">
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <h5>Student ID</h5>
+                <input type="text" id="studentidInput" onkeyup="studentidFilter()" placeholder="Search for studentid" title="Type in a division">
+            </div> 
+            <div class="col-sm-4 col-md-4 col-lg-3">
+                <h5>Date</h5>
+                <input type="date" id="dateInput" onkeyup="dateFilter()" placeholder="Search for date" title="Type in a date">
+            </div>  
+        </div>
+       <br>
+        <div class="row">
+            <div class="col-sm-3 col-md-6 col-lg-2 div-1">
+                <nav class="nav-pills nav flex-column ">
+                  <a class="nav-link" href="http://127.0.0.1:8000/dashboard/">DashBoard</a>
+                  <a class="nav-link" href="http://127.0.0.1:8000/">Student</a>
+                  <a class="nav-link" href="http://127.0.0.1:8000/attendance">Attendance</a>
+                </nav>
+            </div>
+           
+            <div class="col-sm-9 col-md-6 col-lg-10">
+                <!-- The Table -->
+                <!---->
+                <table class="table table-hover" id="attendtable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl No.</th>
+                            <th scope="col">Student ID</th>
+                            <th scope="col">Attendance</th>
+                            <th scope="col">Date</th>
+                            <th class="text-center" colspan = "2">Actions</th>
+    
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"> </tbody>
+                </table>
+            </div>
+        </div>
+    
+        
+        <!-- The popup form -->
+    <div class="form-popup" id="updateForm">
+      <form class="form-container">
+    
+       
+        <input type="hidden" id="id_id_attendance" name="ID"/>
+    
+        <input type="hidden" id="id_ID" name="studentid"/>
+    
+        <label for="date"><b>Date</b></label>
+        <input type="date" id="id_date" name="date"/>
+    
+        <label for="markattendance"><b>Mark Attendance</b></label> <br>
+        <input type="text" id="id_markattendance" name="markattendance"/>
+
+    
+        <button type="submit" class="btn">Update</button>
+        <button type="button" class="btn cancel" onclick="closeupdateForm()">Close</button>
+      </form>
+    </div>  
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>  
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+	  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script>
+
+    //ADD
+    $('.mark').click(function(){
+          console.log("add button clicked");
+            window.location.href='http://127.0.0.1:8000/markattendance/';
+    }) 
+
+    //TABLE AJAX CALL
+		$(document).ready(function() {
+			$.ajax({
+				url: 'http://127.0.0.1:8000/attendancelist/',
+				type: 'GET',
+				success: function (response) {
+					tableDataDisplay(response);	           
+				}
+			});  
+	  })
+		
+
+		//TABLE DISPLAY
+		function tableDataDisplay(response) {
+			
+			var tableData = "";
+			for (var i=0; i<response.length; i++) {
+                console.log(response[i])
+                var update_id=response[i].id;
+                var delete_id=response[i].id;
+                console.log(update_id)
+                tableData+= '<tr>';      
+                tableData+= '<td>'+ [i+1] + '</td>';                                                          
+                tableData+= '<td>'+response[i].student+ '</td>';
+                tableData+= '<td>'+response[i].markattendance + '</td>';
+                tableData+= '<td>'+response[i].date + '</td>';
+                tableData+= '<td> <input class= "btn btn-warning" type="button" value="Update" id="'+update_id+'" onclick="updateattendance(id)"/> </td>';
+                tableData+= '<td> <input class= "btn btn-danger" type="button" value="Delete" id="'+delete_id+'" onclick="deleteattendance(id)"/> </td>';
+                tableData+= '</tr>';
+                }
+			document.getElementById("tableBody").innerHTML=tableData;
+		    }
+
+        //FILTER
+        function classFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("Cinput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("attendtable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[4];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }       
+            }
+          }
+
+        function studentidFilter() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("studentidInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("attendtable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[1];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }       
+            }
+          }
+        
+        function dateFilter() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("dateInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("attendtable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[3];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }       
+            }
+          }
+        
+
+      //DELETE FUNCTION
+      function deleteattendance(id) {
+
+        var confirmation = confirm("Are you sure you want to delete?");
+        if (confirmation) {
+          console.log("delete button clicked");
+          //console.log(id);
+          $.ajax({
+             url : "http://127.0.0.1:8000/attendancedelete/"+id+'/',
+             type : "GET",
+              success:function(response){
+                  response =  response;
+                  tableDataDisplay(response);
+                  alert('attendance record deleted successfully.');
+             }
+             }) 
+            }  
+          }
+
+      //UPDATE FUNCTION
+      function updateattendance(id) {
+			
+        var confirmation = confirm("Are you sure that you want to update?");
+        if (confirmation){
+          console.log("update button clicked");
+          console.log(id);
+          $.ajax({
+            url : "http://127.0.0.1:8000/attendanceupdate/"+id+'/',
+            type : "GET",
+            success:function(response){
+                response =  response;
+                //console.log(response)
+                var attendid = response.id;
+                var student = response.student;
+                var date = response.date;
+                var markattendance = response.markattendance;
+                openupdateForm(attendid,student,date, markattendance) 
+              }
+  
+            }) 
+          }  
+        }
+  
+  
+      function openupdateForm(attendid,student,date,markattendance) {
+          document.getElementById("updateForm").style.display = "block";
+          $('#id_id_attendance').val(attendid);
+          $('#id_ID').val(student);
+          $('#id_date').val(date);
+          $('#id_markattendance').val(markattendance);
+          $('.btn').click(function(event){
+              event.preventDefault;
+              console.log("popup form");
+              var get_id_attend = $('#id_id_attendance').val();
+              var get_ID = $('#id_ID').val();
+              var get_date = $('#id_date').val();
+              var get_markattendance = $('#id_markattendance').val();
+              updatecall(get_id_attend,get_ID,get_date,get_markattendance);
+              })
+            }
+  
+  
+      function updatecall(get_id_attend,get_ID,get_date,get_markattendance){
+  
+          $.ajax({
+                  url : "http://127.0.0.1:8000/attendanceupdate/"+ID+'/',
+                  type : "POST",
+                  data : {
+                          id: get_id_attend,
+                          student: get_ID,
+                          markattendance: get_date,
+                          date: get_markattendance, 
+                          csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                          },
+                  success: function (response) {
+                          alert("Updated successfully");
+                          tableDataDisplay(response);	           
+                          }
+             })
+      }
+      
+  
+      function closeupdateForm() {
+  
+          document.getElementById("updateForm").style.display = "none";
+          window.location.href = "http://127.0.0.1:8000/attendance/";	
+      }
+      
+  
+      </script>
+    </body>
+</html>

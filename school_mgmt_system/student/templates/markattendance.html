@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>studentlist</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+	<style>
+		body{
+			background: rgb(131, 170, 203);
+			background: linear-gradient(90deg, lightblue, white);
+		}
+	</style>
+
+</head>
+
+<body>
+    <br> <br>
+    <center> <h1 style="color:red;">STUDENT MANAGEMENT SYSTEM</h1> </center>
+    <br>
+    <div class="form" id="myForm">
+        <form class="form-horizontal">
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="ID"><b>Student ID</b></label>
+              <input type="text" class="form-control" id="id_ID" name="ID"/>  
+          </div>
+
+          <div class="form-group">
+              <label class="control-label col-sm-2" for="date"><b>Date</b></label>
+              <input type="date" class="form-control" id="id_date" name="date"/> 
+          </div>
+              
+  
+          <div class="form-group col-md-4">
+              <label class="control-label col-sm-2" for="attendance"><b>Attendance</b></label>
+              <select class="form-control" id="id_attendance">
+                  <option value="SelectAttendance">Select Attendance Type</option> <br>
+                  <option value="Fulldaypresent">Fulldaypresent</option>
+                  <option value="Fulldayabsent">Fulldayabsent</option>
+                  <option value="Halfdayleave">Halfdayleave</option>                                                
+              </select>            
+          </div>
+
+    <center> 
+    <button type="submit" class="btn btn-primary m-3 p-2" onclick="markattendance()">Submit</button> 
+    <button type="button" class="btn btn-danger m-3 p-2" onclick="closeForm()">Close</button>
+    </center>
+
+    </form>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+  
+  <script>
+    function markattendance(){
+        console.log("mark attendance")
+        var get_studentid = $('#id_ID').val();
+        var get_date = $('#id_date').val();
+        var get_attendance = $('#id_attendance').val();
+        
+        $.ajax({
+            url : "http://127.0.0.1:8000/attendancecreate/",
+            type : "POST",
+            data : {
+                    student: get_studentid,
+                    date: get_date,
+                    markattendance: get_attendance,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    },
+            success: function (response) {
+                    alert(response)
+                    console.log(response)
+                    alert("attendance marked successfully")
+                    window.location = "http://127.0.0.1:8000/attendance";	           
+                    },
+         })
+    
+
+    }
+    function closeForm(){
+        document.getElementById("myForm").style.display = "none";
+        window.location.href = "http://127.0.0.1:8000/attendance/";           
+    }
+
+</script>
+</body>
+</html>

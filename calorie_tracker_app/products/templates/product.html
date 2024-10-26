@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {  
+            font-family: Roboto, sans-serif;
+            }
+        h1 {  
+            color: blue;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }  
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+            display: inline-block; 
+            width: calc(33.33% - 20px); 
+            margin-right: 20px; 
+            vertical-align: top; 
+        }
+
+        .product-card h2 {
+            margin-top: 0;
+        }
+
+        .product-card p {
+            margin-bottom: 10px;
+        }
+
+
+        .product-card button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Cart styles */
+        .cart-container {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+        }
+
+        .cart {
+            display: flex;
+            align-items: center;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cart-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .cart-count {
+            font-weight: bold;
+        }
+
+        .cart-count-container {
+            position: relative;
+        }
+
+        .cart-count-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            padding: 4px;
+            border-radius: 50%;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-selector input {
+            width: 50px;
+            text-align: center;
+        }
+
+        .quantity-selector button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <br />
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+    <div class="product-grid" id="product-list"></div>
+
+    <div class="cart-container">
+        <div class="cart" onclick="cartview()">
+            <div class="cart-icon">
+                &#128722;
+            </div>
+            <div class="cart-count-container">
+                <span class="cart-count">0</span>
+                <div class="cart-count-badge"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        $(document).ready(function() {
+            updateCartCount();
+            var csrftoken = getCookie("csrftoken");
+            $.ajax({
+                url: "http://127.0.0.1:8000/payments/productlist/",
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    if (response.status === "true") {
+                        displayProducts(response.data);
+                    } else {
+                        alert("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("An error occurred: " + error);
+                }
+            });
+            
+        });
+        function updateCartCount() {
+            var user = '{{ request.user }}';
+            console.log(user)
+        
+            var csrftoken = getCookie("csrftoken");
+            console.log(csrftoken);
+            var data = {
+                'user': user
+            };
+            $.ajax({
+                url: "http://127.0.0.1:8000/payments/cart/count/",
+                type: "GET",
+                headers: {
+                    "X-CSRFToken": csrftoken
+                },
+                data: data,
+                success: function(response) {
+                    if (response.status === "true") {
+                        var cartCount = response.count;
+                        console.log(cartCount)
+                        $(".cart-count").text(cartCount);
+                    } else {
+                        console.log("Error: " + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log("An error occurred: " + error);
+                }
+            });
+        }
+
+        function displayProducts(products) {
+            var productList = document.getElementById("product-list");
+
+            for (var i = 0; i < products.length; i++) {
+                var product = products[i];
+                var productCard = document.createElement("div");
+                productCard.className = "product-card";
+                productCard.id = `product-card-${product.product_id}`; // Add ID to the product card
+                productCard.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <p>${product.description}</p>
+                    <p>Price: ${product.unit_amount} ${product.currency}</p>
+                    <button onclick="addToCart('${product.product_id}')">Add to Cart</button>
+                `;
+                productList.appendChild(productCard);
+            }
+        }
+
+        function addToCart(product_Id) {
+            console.log(product_Id)
+            var quantitySelector = document.createElement("div");
+            quantitySelector.className = "quantity-selector";
+            quantitySelector.innerHTML = `
+                <button onclick="decrementQuantity()">-</button>
+                <input type="number" id="quantity-input" value="1" min="1">
+                <button onclick="incrementQuantity()">+</button>
+                <button onclick="confirmAddToCart('${product_Id}')">Add</button>
+            `;
+            var productCard = document.getElementById(`product-card-${product_Id}`);
+            if (productCard) {
+                productCard.appendChild(quantitySelector);
+            } else {
+                console.error(`Product card with ID 'product-card-${product_Id}' not found.`);
+            }
+        }
+
+        function decrementQuantity() {
+            var quantityInput = document.getElementById("quantity-input");
+            if (quantityInput.value > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        }
+
+        function incrementQuantity() {
+            var quantityInput = document.getElementById("quantity-input");
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        }
+
+        function confirmAddToCart(product_Id) {
+            var user = '{{ request.user }}';
+            console.log(user);
+            var csrftoken = getCookie("csrftoken");updateCartCount();
+            console.log(csrftoken);
+            var quantityInput = document.getElementById("quantity-input");
+            var quantity = parseInt(quantityInput.value);
+            console.log(quantity);
+            var productCard = document.getElementById(`product-card-${product_Id}`);
+            var quantitySelector = productCard.getElementsByClassName("quantity-selector")[0];
+            if (quantitySelector) {
+                quantitySelector.remove();
+                var data = {
+                    'product_id': product_Id,
+                    'quantity': quantity,
+                    'user': user
+                };
+                console.log(data);
+                $.ajax({
+                    url: "http://127.0.0.1:8000/payments/cart/add/",
+                    type: "POST",
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    },
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        console.log(response);
+                        alert("Product added to cart successfully");
+                        updateCartCount();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("An error occurred: " + error);
+                    }
+                });
+            }
+        }
+
+        function cartview() {
+            $.ajax({
+                url: "http://127.0.0.1:8000/payments/cart/view/",
+                type: "GET",
+                success: function(response) {
+                    window.location.href = "http://127.0.0.1:8000/payments/cart/view/";
+                },
+                error: function(xhr, status, error) {
+                    console.log("An error occurred: " + error);
+
+                }
+            });
+            
+        }
+    </script>        
+</body>
+</html>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>addfooditem</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+      
+</head>
+
+<body>
+	<br> <br>
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+    <br>
+
+<!-- The  form -->
+
+    <form class="form-horizontal" id="createfoodForm"  method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label class="control-label col-sm-2"for="name"><b>Name</b></label>
+            <input type="text" class="form-control" id="id_name" name="name"/> 
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label>Upload Image</label>
+            <input type="file" id="image" accept="image/png, image/jpeg" class="form-control-file">
+        </div>
+        <br>
+
+        <div class="form-group required">  
+            <label class="d-flex flex-row align-items-center" for="category"> <b>Category</b></label> 
+        <select name="category" id="id_category">
+            <option value="">--Please choose an option--</option>
+            <option value="Veg">Veg</option>
+            <option value="NonVeg">NonVeg</option>
+        </select>
+        </div>  
+        <br>
+    
+
+        <div class="form-group">
+            <label class="control-label" for="quantity"><b>Quantity</b></label>
+            <input type="text" class="form-control" id="id_quantity" name="quantity"/>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="calories"><b>Calories</b></label>
+            <input type="text" class="form-control" id="id_calories" name="calories"/>
+        </div>
+        <br>
+
+        <center>
+            <button type="submit" class="btn btn-primary m-3 p-2" value = "createfood" id="createfood">Submit</button> 
+            <button type="button" class="btn btn-danger m-3 p-2" onclick="closeForm()">Close</button>
+        </center>
+
+  </form>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  
+  
+	
+	<script>
+
+    $(document).on('submit', '#createfoodForm', function(event){
+
+        event.preventDefault();
+        
+        if (document.getElementById("id_name").value.trim() == "") {
+            alert("Please enter Name of food!");
+            return false;
+        }
+        if (document.getElementById("id_category").value.trim() == "") {
+            alert("Please enter category!");
+            return false;
+        }
+        if (document.getElementById("id_quantity").value.trim() == "") {
+            alert("Please enter quantity!");
+            return false;
+        }
+        if (document.getElementById("id_calories").value.trim() == "") {
+            alert("Please enter Calory!");
+            return false;
+        }
+
+        var formData = new FormData();
+        formData.append('name', $('#id_name').val())
+        formData.append('category', $('#id_category').val())
+        formData.append('quantity', $('#id_quantity').val())
+        formData.append('calories', $('#id_calories').val())
+        formData.append('image',  $('#image')[0].files[0])
+        formData.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val())
+        $.ajax({
+            url : "http://127.0.0.1:8000/food/create/",
+            headers: {
+                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                },
+            type : "POST",
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            enctype: 'multipart/form-data',
+            success: function (Response) {
+                    alert("Food Item created successfully");
+                    window.location.href='http://127.0.0.1:8000/food/listview/';	           
+                    },
+            error: function (Response) {
+                    alert("Food Item not created");
+                    window.location.href='http://127.0.0.1:8000/food/listview/';	           
+                    }
+         })
+    })
+    
+    function closeForm(){
+        window.location.href = "http://127.0.0.1:8000/food/listview/";	           
+    }
+	</script>
+</body>
+</html>

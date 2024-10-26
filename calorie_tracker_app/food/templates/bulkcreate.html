@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <br> <br>
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION</h1>
+    <br>
+    <div class="file-upload">
+        <h2>Upload an Excel file to add food details in bulk</h2>
+        <p class="upload-description">Select the Excel file:</p>
+        <input id="fileupload" type="file" name="fileupload" class="file-input" />
+        <button id="upload-button" class="btn btn-primary">Upload</button>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var fileData;
+
+            // Event handler for file upload
+            $('#fileupload').on('change', function(e) {
+                fileData = e.target.files[0];
+            });
+
+            // Function to upload the file
+            function uploadFile() {
+                if (!fileData) {
+                    alert('Please select a file to upload.');
+                    return;
+                }
+
+                var formData = new FormData();
+                formData.append('file', fileData);
+
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/food/bulkcreate/',
+                    headers: {
+                        'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                    },
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function(response) {
+                        console.log('File upload', response);
+                        alert('The file has been uploaded successfully.');
+                        alert('Bulk Creation of food items is successful.');
+                        window.location.href= "http://127.0.0.1:8000/food/listview/";
+                    },
+                    error: function(response) {
+                        console.error('File upload error', response);
+                        alert('Error uploading the file.');
+                    }
+                });
+            }
+
+            $('#upload-button').click(uploadFile);
+        });
+    </script>
+</body>
+</html>

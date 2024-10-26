@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>Food list</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+</head>
+<body>
+
+    <br>
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+    <br> <br>
+
+    <h5 style="text-align:center">LIST OF FOOD  ITEMS</h5> <br>
+  
+    <table class="table table-striped" id="foodtable">
+        <thead>
+            <tr>
+                <th scope="col">Sl. No.</th>
+                <th scope="col">Item Name</th>      
+                <th scope="col">Quantity (grams) </th>
+                <th scope="col">Calories (cals)</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"> 
+            
+
+            {% for element in foodlist  %}
+    
+            
+            <tr>
+                <td> {{forloop.counter}}</td>
+                <td> {{element.0}}</td>
+                <td> {{element.1}}</td>
+                <td> {{element.2}}</td>
+                <td> {{element.3}}</td>
+                
+            </tr>
+  
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total calories: {{net_calories}} cal</h3>
+</body>
+</html>

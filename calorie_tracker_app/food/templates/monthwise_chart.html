@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>month wise</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+<body class="container-fluid">
+<center class="row">
+	<br> <br>
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+    <br> <br>
+</center>
+<hr/>
+<h4 id=y> <center>  </center> </h4>
+<h4 id=m> <center>  </center> </h4>
+<div class="row">
+    <div class="col-md-6">
+        <h3> <center> Calories and quantities consumed </center> </h3>
+        <canvas id="id_barchart"></canvas>
+    </div>
+
+    <div class="col-md-6">
+        <h3> <center> Quantity consumed based on categories </center> </h3>
+        <canvas id="id_piechart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script>
+    $(document).ready(function() {
+        user=window.localStorage.getItem("id");
+        month = window.localStorage.getItem("month")
+        year = window.localStorage.getItem("year")
+        
+        document.getElementById("m").innerHTML = month
+        document.getElementById("y").innerHTML = year
+        //console.log(user,date)
+       // if (date == null)
+           // alert("No Records found")
+        $.ajax({
+            
+            method: "GET",
+            //url: 'http://127.0.0.1:8000/monthwisechart/?month=2&user=2&year=2023',
+            url: 'http://127.0.0.1:8000/monthwisechart/',
+            data: {
+                user:user,
+                month:month,
+                year:year,
+                },
+            success: function(data) {
+                console.log(data)
+                barGraph(data, 'id_barchart');
+                pieChart(data, 'id_piechart');
+                window.localStorage.removeItem('date');
+            },
+            error: function(data) {
+                console.log("error")
+            }
+        })
+    })
+
+    function pieChart(data, id) {
+        {% comment %} console.log(id)
+        console.log(data)
+        console.log(data.chartLabel_piechart)
+        console.log(data.chartdata_piechart)
+        console.log(data.labels_piechart.length) {% endcomment %}
+        var labels = data.labels_piechart;
+        var chartLabel = data.chartLabel_piechart;
+        var chartdata = data.chartdata_piechart;
+        var barColors = generateRandomColors(data.labels_piechart.length)
+        new Chart(id, {
+        type: "pie",
+        
+        data: {
+            labels: labels ,
+            datasets: [{backgroundColor: barColors,data: chartdata }]
+        },
+       // options: {title: {display: true,text: "Calories Consumed"}}
+        });
+        }
+    
+
+    function generateRandomColors(numColors) {
+        var colors = [];
+        for (var i = 0; i < numColors; i++) {
+            var r = Math.floor(Math.random() * 255);
+            var g = Math.floor(Math.random() * 255);
+            var b = Math.floor(Math.random() * 255);
+            var color = "rgba(" + r + "," + g + "," + b + ",0.8)";
+            colors.push(color);
+        }
+        return colors;
+        }
+
+
+    function barGraph(data, id) {
+        {% comment %} console.log(id)
+        console.log(data)
+        console.log(data.chartLabel)
+        console.log(data.food_name)
+        console.log(data.food_name.length)
+        console.log(data.calories)
+        console.log(data.quantity) {% endcomment %}
+        var calories = data.calories;
+        var quantity = data.quantity;
+        var food_name = data.food_name;
+        var labels = data.labels_piechart;
+        var myChart = new Chart(id, {
+            type: 'bar',
+            data: {
+                labels: food_name,
+                datasets: [{
+                    label: 'Calories Consumed',
+                    data: calories,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Quantity consumed',
+                    data: quantity,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+
+</html>

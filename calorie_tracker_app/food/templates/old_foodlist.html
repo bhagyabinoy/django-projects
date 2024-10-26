@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>Food list</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+	<style>
+
+        .div-1 {
+            background-color: #EBEBEB;
+        }
+
+		table {
+			width: 50%;
+		}
+
+		th {
+			background: #f1f1f1;
+			font-weight: bold;
+			text-align: center;
+			padding: 6px;
+		}
+
+		td {
+			background: #f9f9f9;
+			text-align: center;
+			padding: 6px;
+		}
+
+        {box-sizing: border-box;}
+
+        .previous {
+        text-align: left;
+        }
+        
+        .next {
+        text-align: right;
+        }
+
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 23px;
+        right: 28px;
+        width: 280px;
+        }
+
+        /* The popup form - hidden by default */
+        .form-popup {
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 12px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        }
+
+        /* Add styles to the form container */
+        .form-container {
+        max-width: 400px;
+        padding: 10px;
+        background-color: white;
+        }
+
+        /* Full-width input fields */
+        .form-container input[type=text], .form-container input[type=password] {
+        width: 100%;
+        padding: 5px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+        }
+
+        /* When the inputs get focus, do something */
+        .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+        }
+
+        /* Set a style for the submit/login button */
+        .form-container .btn {
+        background-color: #04AA6D;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom:10px;
+        opacity: 0.8;
+        }
+
+        /* Add a red background color to the cancel button */
+        .form-container .cancel {
+        background-color: red;
+        }
+
+        /* Add some hover effects to buttons */
+        .form-container .btn:hover, .open-button:hover {
+        opacity: 1;
+        }
+    </style>
+      
+</head>
+
+<body>
+
+    <br> <br>
+    <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+    <br> <br>
+
+    <div class="row">
+        <div class="col-sm-3 col-md-3 col-lg-1" style="text-align:center"> </div>
+        <div class="col-sm-3 col-md-3 col-lg-2" style="text-align:center">
+            <a class="btn btn-primary" href="http://127.0.0.1:8000/food/add/" role="button">Add Food Item</a>
+        </div> 
+        <div class="col-sm-3 col-md-3 col-lg-2" style="text-align:center"> 
+          <a class="btn btn-primary" href="http://127.0.0.1:8000/food/bulkcreatepage/" role="button">Bulk Create</a>
+        </div>
+
+        <div class="col-sm-3 col-md-3 col-lg-2" style="text-align:center"> 
+          <a class="btn btn-primary" href="http://127.0.0.1:8000/userlist/" role="button">User List</a>
+        </div>
+    
+        <div class="col-sm-3 col-md-3 col-lg-2" style="text-align:center">
+          <a class="btn btn-warning" href="http://127.0.0.1:8000/passwordchange/" role="button">Change Password</a>
+        </div> 
+
+        <div class="col-sm-3 col-md-3 col-lg-2" style="text-align:center">
+          <button class ='btn btn-danger logout'> Log Out </button>
+        </div> 
+    </div>
+    <br>
+
+    <br>
+  <!-- Search By Category -->
+  <div class="row">
+    <div class="col-sm-6 col-md-6 col-lg-2" style="text-align:left"> </div>
+    <div class="col-sm-6 col-md-6 col-lg-4" style="text-align:left"> 
+        <input type="text" id="Catgoryinput" placeholder="Search based on category" title="Type in food">
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3" style="text-align:left"> 
+        <button type="submit" class="btn btn-success" onclick="SearchNameFunction()">Search by Category</button> 
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-3" style="text-align:left"> 
+        <button type="submit" class="btn btn-success" onclick="categoryfilterPDF()">Export to PDF</button> 
+    </div>
+</div>
+<br>
+
+<!-- Search By Name -->
+<div class="row">
+<div class="col-sm-6 col-md-6 col-lg-2" style="text-align:left"> </div>
+<div class="col-sm-6 col-md-6 col-lg-4" style="text-align:left"> 
+    <input type="text" id="id_foodname" placeholder="Search based on name of food item" title="Type in food">
+</div>
+<div class="col-sm-6 col-md-6 col-lg-3" style="text-align:left"> 
+    <button type="submit" class="btn btn-success" onclick="SearchNameFunction()">Search by Name</button> 
+</div>
+<div class="col-sm-6 col-md-6 col-lg-3" style="text-align:left"> 
+    {% comment %} <button type="submit" class="btn btn-success" onclick="namefilterPDF()">Export to PDF</button>  {% endcomment %}
+</div>
+</div>
+<br>
+<br>
+
+
+<!-- Filter Bar -->
+<div class="row">  
+    <div class="col-sm-6 col-md-6 col-lg-4" style="text-align:center"> <b>Filter based on calories: </b></div>
+    <div class="col-sm-6 col-md-6 col-lg-4" style="text-align:left"> 
+        <select name="calorie" id="id_calorie">
+            <option value="">--Please choose an option--</option>
+            <option value="lessthan">Less than 100 calories</option>
+            <option value="between">Between 100 and 200 calories</option>
+            <option value="greaterthan">Greater than 200 calories</option>
+        </select>
+    </div>  
+    <div class="col-sm-6 col-md-6 col-lg-2" style="text-align:left"> 
+        <button type="submit" class="btn btn-primary" onclick="filtercalory()">Filter</button> 
+    </div> 
+    <div class="col-sm-6 col-md-6 col-lg-2" style="text-align:center"> 
+        <button type="submit" class="btn btn-success" onclick="filtercaloryPDF()">Export to PDF</button> 
+    </div>
+</div>  <br>
+<center>
+<div> 
+    <a class="btn btn-primary" href="http://127.0.0.1:8000/food/pdf/" role="button">Export Food List to PDF</a>
+</div>
+</center><br>
+
+    <h5 style="text-align:center">LIST OF FOOD  ITEMS</h5> <br>
+    
+        
+
+
+    <!-- The Table -->
+  
+        <table class="table table-striped" id="foodtable">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No.</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Item Name</th> 
+                    <th scope="col">Image</th> 
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity (grams) </th>
+                    <th scope="col">Calories (cals)</th>
+                    <th class="text-center" colspan = "2">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"> </tbody>
+        </table>
+    </div>
+
+
+    <!-- The popup form -->
+
+    <div class="form-popup" id="updateForm">
+    <form class="form-container">
+        {% csrf_token %}
+        <input type="hidden" id="id_id" name="id"/>
+    
+        <label for="name"><b>Item Name</b></label>
+        <input type="text" id="id_name" name="name"/> <br>
+
+        <label for="image"><b>Image</b></label>
+        <input type="file" id="image" accept="image/png, image/jpeg" class="form-control-file" autocomplete="off"> <br>
+
+        <label for="cat"><b>Category</b></label>
+        <input type="text" id="id_cat" name="cat"/> <br>
+    
+        <label for="quantity"><b>Quantity in grams</b></label>
+        <input type="text" id="id_quantity" name="quantity"/> <br>
+
+        <label for="calories"><b>Calories in cal</b></label>
+        <input type="text" id="id_calories" name="calories"/> <br>
+    
+        <button type="submit" class="btn btn-primary" value = "updatefood" id="updatefood">Submit</button> 
+        <button type="button" class="btn cancel" onclick="closeupdateForm()">Close</button>
+    </form>
+    </div>  
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+  
+	<script>
+
+
+        function SearchFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("Foodinput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("foodtable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[4];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                  alert("No Food item in this category is available")
+                }
+              }       
+            }
+          }
+
+
+        function SearchNameFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("Nameinput");
+            console.log(input)
+            filter = input.value.toUpperCase();
+            table = document.getElementById("foodtable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[2];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                  
+                }
+              }       
+            }
+          }
+
+
+        function filtercalory() {
+
+            var valu=document.getElementById("id_category").value;  
+            var value=valu
+
+                switch (valu) {
+                    case 'lessthan':  lessthan(); break;
+                    case 'greaterthan': greaterthan(); break;
+                    case 'between': between(); break;
+                 }
+          }
+        
+
+        function lessthan(){
+            $.ajax({
+                url: 'http://127.0.0.1:8000/food/caloryless/',
+                headers: {
+                  'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                  },
+                type: 'GET',
+                success: function (response) {
+                            tableDataDisplay(response);	           
+                },
+                error: function (response) {
+                          console.log(response.status);
+                          if (response.status == 401) {
+                            const refresh= localStorage.getItem('refreshToken');
+                           
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/token/refresh/',
+                                type: "POST",
+                                data: {
+                                    refresh : refresh
+                                    },
+                                success: function (response) {
+                                            window.localStorage.setItem('accessToken', response['access']);
+  
+                                            $.ajax({
+                                                url: 'http://127.0.0.1:8000/food/caloryless/',
+                                                headers: {
+                                                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                },
+                                                type: 'GET',
+                                                success: function (response) {
+                                                            tableDataDisplay(response);	           
+                                                }
+                                            }) 
+                                        }
+                                    }) 
+                        } 
+                        else{
+                            if (response.status == 404) {
+                            alert("No Food item was found")
+                            }
+                            else {
+                                alert("Please Login Again")
+                                console.log(response);
+                                window.location.href= "http://127.0.0.1:8000/loginpage/";
+                            }
+                        }
+                    }
+                })
+            }
+          
+
+        function greaterthan(){
+            $.ajax({
+                url: 'http://127.0.0.1:8000/food/calorygt/',
+                headers: {
+                  'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                  },
+                type: 'GET',
+                success: function (response) {
+                            tableDataDisplay(response);	           
+                },
+                error: function (response) {
+                            console.log(response.status);
+                            if (response.status == 401) {
+                                const refresh= localStorage.getItem('refreshToken');
+                           
+                                $.ajax({
+                                    url: 'http://127.0.0.1:8000/token/refresh/',
+                                    type: "POST",
+                                    data: {
+                                        refresh : refresh
+                                        },
+                                    success: function (response) {
+                                                window.localStorage.setItem('accessToken', response['access']);
+    
+                                                $.ajax({
+                                                    url: 'http://127.0.0.1:8000/food/calorygt/',
+                                                    headers: {
+                                                    'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                    },
+                                                    type: 'GET',
+                                                    success: function (response) {
+                                                                tableDataDisplay(response);	           
+                                                    }
+                                                }) 
+                                            }
+                                }) 
+                            }
+
+                        else{
+                            if (response.status == 404) {
+                            alert("No Food item was found")
+                            }
+                            else {
+                                alert("Please Login Again")
+                                console.log(response);
+                                window.location.href= "http://127.0.0.1:8000/loginpage/";
+                            }
+                        }
+                    }
+            })
+        }
+            
+
+        function between(){
+            $.ajax({
+                url: 'http://127.0.0.1:8000/food/calrange/',
+                headers: {
+                  'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                  },
+                type: 'GET',
+                success: function (response) {
+                            tableDataDisplay(response);	           
+                        },
+                error: function (response) {
+                            console.log(response.status);
+                            if (response.status == 401) {
+                                const refresh= localStorage.getItem('refreshToken');
+                           
+                                $.ajax({
+                                    url: 'http://127.0.0.1:8000/token/refresh/',
+                                    type: "POST",
+                                    data: {
+                                        refresh : refresh
+                                        },
+                                    success: function (response) {
+                                                window.localStorage.setItem('accessToken', response['access']);
+    
+                                                $.ajax({
+                                                    url: 'http://127.0.0.1:8000/food/calrange/',
+                                                    headers: {
+                                                    'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                    },
+                                                    type: 'GET',
+                                                    success: function (response) {
+                                                                tableDataDisplay(response);	           
+                                                    }
+                                                }) 
+                                            }
+                                }) 
+                            }
+                            else{
+                                if (response.status == 404) {
+                                alert("No Food item was found")
+                                }
+                                else {
+                                    alert("Please Login Again")
+                                    console.log(response);
+                                    window.location.href= "http://127.0.0.1:8000/loginpage/";
+                                }
+                            }
+                    }
+                })
+            }
+
+
+
+        //LOGOUT
+
+        $('.logout').click(function(){
+            var confirmation = confirm("Are you sure you want to logout?");
+            if (confirmation) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/logout/',
+                type: 'GET',
+                success:  function (Response) {
+                              alert(Response.message);;
+                              window.localStorage.removeItem('refreshToken');
+                              window.localStorage.removeItem('accessToken');
+                              window.location.href='http://127.0.0.1:8000/loginpage/';
+                }
+            }) 
+            }
+        });
+
+
+        //TABLE AJAX CALL
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/food/list/',
+                headers: {
+                  'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                  },
+                type: 'GET',
+                success: function (response) {
+                    console.log(response)
+                    console.log(response[0].image)
+                            tableDataDisplay(response);	           
+                },
+                error: function (response) {
+                          console.log(response.status);
+                          if (response.status == 401) {
+                            const refresh= localStorage.getItem('refreshToken');
+                           
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/token/refresh/',
+                                type: "POST",
+                                data: {
+                                    refresh : refresh
+                                    },
+                                success: function (response) {
+                                            window.localStorage.setItem('accessToken', response['access']);
+  
+                                            $.ajax({
+                                                url: 'http://127.0.0.1:8000/food/list/',
+                                                headers: {
+                                                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                },
+                                                type: 'GET',
+                                                success: function (response) {
+                                                            tableDataDisplay(response);	           
+                                                }
+                                            }) 
+                                        }
+                                    }) 
+                        } else {
+                            alert("Please Login Again")
+                            console.log(response);
+                            window.location.href= "http://127.0.0.1:8000/loginpage/";
+                        }
+                    }
+                })
+            })
+
+
+        //TABLE DISPLAY
+        function tableDataDisplay(response) {
+            //ImageUrl =  "http://127.0.0.1:8000" 
+            var tableData = "";
+            for (var i=0; i<response.length; i++) {
+                var update_id=response[i].id;
+                var delete_id=response[i].id;
+                tableData+= '<tr>';      
+                tableData+= '<td>'+ [i+1] + '</td>';                                                          
+                tableData+= '<td>'+response[i].id+ '</td>';
+                tableData+= '<td>'+response[i].name + '</td>';
+                //tableData+= '<td><img src='+ImageUrl+response[i].image+'  height="100" width="120" ></td>';
+                tableData+= '<td><img src='+response[i].image+'  height="100" width="120" ></td>';
+                tableData+= '<td>'+response[i].category  + '</td>';
+                tableData+= '<td>'+response[i].quantity + '</td>';
+                tableData+= '<td>'+response[i].calories + '</td>';
+                tableData+= '<td> <input class= "btn btn-warning" type="button" value="Update" id="'+update_id+'" onclick="updatefood(id)"/> </td>';
+                tableData+= '<td> <input  class= "btn btn-danger" type="button" value="Delete" id="'+delete_id+'" onclick="deletefood(id)"/> </td>';
+                tableData+= '</tr>';
+                }
+                document.getElementById("tableBody").innerHTML=tableData;
+            }
+            
+
+        //DELETE FUNCTION
+        function deletefood(id) {
+
+            var confirmation = confirm("Are you sure you want to delete?");
+            if (confirmation) {
+                $.ajax({
+                    url : "http://127.0.0.1:8000/food/delete/"+id+'/',
+                    headers: {
+                      'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                      },
+                    type : "GET",
+                    success:function(response){
+                            alert("Food Item Removed Successfully")
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/food/list/',
+                                headers: {
+                                    'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                    },
+                                type: 'GET',
+                                success: function (response) {
+                                            tableDataDisplay(response);	  
+                                        }         
+                                })
+                        },
+                    error: function (response) {
+                            if (response.status == 401) {
+                                const refresh= localStorage.getItem('refreshToken');
+
+                                $.ajax({
+                                    url: 'http://127.0.0.1:8000/token/refresh/',
+                                    type: "POST",
+                                    data: {
+                                        refresh : refresh
+                                        },
+                                    success: function (response) {
+                                
+                                                window.localStorage.setItem('accessToken', response['access']);
+                                                $.ajax({
+                                                    url : "http://127.0.0.1:8000/food/delete/"+id+'/',
+                                                    headers: {
+                                                        'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                        },
+                                                    type : "GET",
+                                                    success:function(response){
+                                                                alert("Food Item Deleted Successfully")
+                                                                $.ajax({
+                                                                    url: 'http://127.0.0.1:8000/food/list/',
+                                                                    headers: {
+                                                                        'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                                        },
+                                                                    type: 'GET',
+                                                                    success: function (response) {
+                                                                                tableDataDisplay(response);	  
+                                                                            }         
+                                                                    })
+                                                                },
+                                                }) 
+                                    }, 
+                                })   
+                            } 
+                            else {
+                                alert("Please Login Again")
+                                console.log(response);
+                                window.location.href= "http://127.0.0.1:8000/loginpage/";
+                            }
+                        }  
+                    }) 
+                }
+        }
+    
+
+
+        //UPDATE FUNCTION
+        function updatefood(id) {
+           
+            var confirmation = confirm("Are you sure that you want to update?");
+            if (confirmation){
+                $.ajax({
+                    url : "http://127.0.0.1:8000/food/detail/"+id+'/',
+                    headers: {
+                    'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                    },
+                    type : "GET",
+                    success:function(response){
+                                var id = response.id;
+                                var name = response.name;
+                                var image = response.image;
+                                var category = response.category;
+                                var quantity= response.quantity;
+                                var calories= response.calories;
+                                console.log("image from details view: ",image)
+                                openupdateForm(id,name,image,category,quantity,calories) 
+                            },
+
+                    error: function (response) {
+                                console.log(response.status);
+                                if (response.status == 401) {
+                                    const refresh= localStorage.getItem('refreshToken');
+                                    $.ajax({
+                                        url: 'http://127.0.0.1:8000/token/refresh/',
+                                        type: "POST",
+                                        data: {
+                                            refresh : refresh
+                                            },
+                                        success: function (response) {
+            
+                                                    window.localStorage.setItem('accessToken', response['access']);
+                                                    $.ajax({
+                                                        url : "http://127.0.0.1:8000/food/detail/"+id+'/',
+                                                        headers: {
+                                                        'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                        },
+                                                        type : "GET",
+                                                        success:function(response){
+                                                                var id = response.id;
+                                                                var name = response.name;
+                                                                var image = response.image;
+                                                                var category = response.category;
+                                                                var quantity= response.quantity;
+                                                                var calories= response.calories;
+                                                                openupdateForm(id,name,image,category,quantity,calories) 
+                                                                }
+                                                    })
+                                            } 
+                                        })   
+                                } 
+                                else {
+                                    alert("Please Login Again")
+                                    console.log(response);
+                                    window.location.href= "http://127.0.0.1:8000/loginpage/";
+                                }
+                        }  
+                }) 
+            }
+        }
+
+
+        function openupdateForm(id,name,image,category,quantity,calories) {
+            console.log(category);
+            document.getElementById("updateForm").style.display = "block";
+            //ImageUrl =  "http://127.0.0.1:8000";    
+            //let imge = document.getElementById("image");
+            //imge.src = ImageUrl+image;
+            //console.log("image: ",img1);
+          
+            $('#id_id').val(id);
+            $('#id_name').val(name);
+            //$('#id_image').val(img1);
+            $('#id_cat').val(category)   
+            $('#id_quantity').val(quantity);
+            $('#id_calories').val(calories);
+            
+
+            $(document).on('submit', '#updateForm', function(event){
+
+                event.preventDefault();
+                var get_name = $('#id_name').val();
+                var get_image = $('#image')[0].files[0]
+                var get_category = $('#id_cat').val();
+                var get_quantity = $('#id_quantity').val();
+                var get_calories = $('#id_calories').val();
+                var id=$('#id_id').val();
+                updatecall(id,get_name,get_image, get_category, get_quantity,get_calories);
+                })
+        }
+
+
+		function updatecall(id,get_name,get_image, get_category, get_quantity,get_calories){
+
+            var formData = new FormData();   
+            if(get_image == null) {
+                console.log('The variable is undefined or null');
+                formData.append('name', get_name)
+                formData.append('category', get_category)
+                formData.append('quantity', get_quantity)
+                formData.append('calories', get_calories)
+                formData.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val()) 
+            }
+            else{
+                formData.append('name', get_name)
+                formData.append('category', get_category)
+                formData.append('quantity', get_quantity)
+                formData.append('calories', get_calories)
+                formData.append('image',  get_image)
+                formData.append('csrfmiddlewaretoken', $('input[name=csrfmiddlewaretoken]').val())  
+            }
+
+            $.ajax({
+                url : "http://127.0.0.1:8000/food/update/"+id+'/',
+                headers: {
+                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                },
+                type : "PATCH",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                success:function(Response){
+                            alert("Item Updated successfully");
+                            $.ajax({
+                                url: 'http://127.0.0.1:8000/food/list/',
+                                headers: {
+                                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                },
+                                type: 'GET',
+                                success: function (response) {
+                                            tableDataDisplay(response);	           
+                                },
+                                error: function (response) {
+                                    
+
+                                    if (response.status == 401) {
+
+                                        const refresh= localStorage.getItem('refreshToken');
+                                        $.ajax({
+                                            url: 'http://127.0.0.1:8000/token/refresh/',
+                                            type: "POST",
+                                            data: {
+                                                refresh : refresh
+                                                },
+                                            success: function (response) {
+                                                        window.localStorage.setItem('accessToken', response['access']);
+                                                        $.ajax({
+                                                            url :  "http://127.0.0.1:8000/food/update/"+id+'/',
+                                                            headers: {
+                                                                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                                },
+                                                            type : "PATCH",
+                                                            success:function(response){
+                                                                        alert("Item updated Successfully")
+                                                                        nameSearchFunction()            
+                                                                        $.ajax({
+                                                                            url: 'http://127.0.0.1:8000/food/list/',
+                                                                            headers: {
+                                                                                'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                                                                                },
+                                                                            type: 'GET',
+                                                                            success: function (response) {
+                                                                                        tableDataDisplay(response);	  
+                                                                                    }         
+                                                                            })
+                                                                },
+                                                }) 
+                                        }, 
+                                    })   
+                                } 
+                                else {
+                                    alert("Please Login Again")
+                                    console.log(response);
+                                    window.location.href= "http://127.0.0.1:8000/loginpage/";
+                                }
+                            }
+                        })  
+                    },
+                error: function(Response){
+                            console.log(Response)
+                            alert(Response);
+
+                    }
+
+            })
+        }
+		
+
+        function closeupdateForm() {
+           
+            document.getElementById("updateForm").style.display = "none";
+        }
+ 
+
+	</script>
+</body>
+</html>

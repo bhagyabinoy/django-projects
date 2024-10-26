@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+	<title>Event Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	
+    <style>
+        body {  
+            background: linear-gradient(to bottom left, white 70%, lightblue);
+            font-family: Roboto, sans-serif;
+              }
+        .vertical-nav {
+          height: 100vh;
+          border-right: 2px solid #ccc; 
+          padding-right: 10px; 
+        } 
+        h1 {  
+            color: blue;  
+            padding-bottom: 2rem;  
+            font-weight: bold;  
+        }   
+        .center-div {
+            text-align: center;
+        }
+        h3 {
+            text-align: center;
+          }
+          .show-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .show-image {
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .show-details {
+            flex: 1;
+        }
+
+        .show-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .show-description {
+            margin-bottom: 10px;
+        }
+
+        .show-time {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .book-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+	
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 vertical-nav">
+                <ul class="nav nav-pills flex-column">
+                    <br> <br> <br>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/profile/">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/passwordchange/">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="http://127.0.0.1:8000/ticket/event/">Events</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/ticket/paymentlistingpage/">Payment History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://127.0.0.1:8000/chat/">Chat with us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout text-danger" href="#">Logout</a>
+                    </li>
+            </ul>
+        </div>
+        <div class="col-lg-10">
+            <br>
+            <h1 style="color:blue;text-align:center">TICKET ISSUANCE SYSTEM  </h1> 
+            <br>
+            
+            <!-- <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <span class="input-group-text">Start Date</span>
+                        <input type="date" id="startDateInput" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <span class="input-group-text">End Date</span>
+                        <input type="date" id="endDateInput" class="form-control">
+                    </div>
+                </div>
+            </div> -->
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="input-group">
+                        <span class="input-group-text">Search Key</span>
+                        <input type="text" id="searchKeyInput" class="form-control" placeholder="Enter event name to filter">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <button id="searchButton" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+
+            <br>
+            
+            <div>
+                <div id="eventContainer">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
+    <script>
+
+        $('.logout').click(function(){
+            var confirmation = confirm("Are you sure you want to logout?");
+            if (confirmation) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/logout/',
+                type: 'GET',
+                success:  function (Response) {
+                                alert(Response.message);;
+                                window.location.href='http://127.0.0.1:8000/loginpage/';
+                }
+            }) 
+            }
+        });
+
+        $(document).ready(function() {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/event/list/',
+                type: 'GET',
+                success: function (response) {
+                    console.log(response);
+                    events = response.data;
+                    console.log(events);
+                    numberOfEvents = response.count;
+                    console.log(numberOfEvents);    
+                    generateShowContainers(numberOfEvents, events); 
+                },
+                error: function (response) {
+                            console.log(response.status);
+                      
+                }
+            })
+        })
+ 
+
+        function generateShowContainers(numberOfEvents, events) {
+            const eventContainer = document.getElementById('eventContainer');
+
+            for (let i = 0; i < numberOfEvents; i++) {
+                const event = events[i];
+
+                const showContainer = document.createElement('div');
+                showContainer.classList.add('show-container');
+
+                const imageElement = document.createElement('img');
+                imageElement.classList.add('show-image');
+                imageElement.src = event.image ? event.image : 'http://127.0.0.1:8000/images/default.jpeg';
+                imageElement.alt = "Show Image";
+
+                const showDetailsDiv = document.createElement('div');
+                showDetailsDiv.classList.add('show-details');
+
+                const showNameDiv = document.createElement('div');
+                showNameDiv.classList.add('show-name');
+                showNameDiv.textContent = event.event_name;
+
+                const showDescriptionDiv = document.createElement('div');
+                showDescriptionDiv.classList.add('show-description');
+                showDescriptionDiv.textContent = event.description;
+
+                const startTimeDiv = document.createElement('div');
+                startTimeDiv.classList.add('show-time');
+                startTimeDiv.textContent = `Start Time: ${event.event_start_time}`;
+
+                const endTimeDiv = document.createElement('div');
+                endTimeDiv.classList.add('show-time');
+                endTimeDiv.textContent = `End Time: ${event.event_end_time}`;
+
+                const bookButton = document.createElement('button');
+                bookButton.classList.add('book-button');
+                bookButton.textContent = 'Book Show';
+                bookButton.addEventListener('click', function() {
+                    localStorage.setItem('event_id', event.id);
+                    console.log(`Booking for Event ${event.id}`);
+                    window.location.href = 'http://127.0.0.1:8000/bookingpage/';
+                });
+
+                showDetailsDiv.appendChild(showNameDiv);
+                showDetailsDiv.appendChild(showDescriptionDiv);
+                showDetailsDiv.appendChild(startTimeDiv);
+                showDetailsDiv.appendChild(endTimeDiv);
+                showContainer.appendChild(imageElement);
+                showContainer.appendChild(showDetailsDiv);
+                showContainer.appendChild(bookButton);
+
+                eventContainer.appendChild(showContainer);
+            }
+        }
+    
+            $('#searchButton').click(function() {
+                filterEvents();
+            });
+            
+            // function formatDateForAPI(dateString) {
+            //     const date = new Date(dateString);
+            //     const year = date.getFullYear();
+            //     const month = String(date.getMonth() + 1).padStart(2, '0');
+            //     const day = String(date.getDate()).padStart(2, '0');
+            //     return `${year}-${month}-${day}`;
+            //}
+            function filterEvents() {
+
+                const searchKey = document.getElementById('searchKeyInput').value.trim().toLowerCase();
+                const eventContainer = document.getElementById('eventContainer');
+                eventContainer.innerHTML = '';
+    
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/event/list/',
+                    type: 'GET',
+                    data: {
+                        // start_date: startdate,
+                        // end_date: enddate,
+                        search_key: searchKey
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        const events = response.data;
+                        const numberOfEvents = response.count;
+                        console.log(numberOfEvents);
+                        generateShowContainers(numberOfEvents, events);
+                    },
+                    error: function(response) {
+                        console.log(response.status);
+                    }
+                });
+            }
+</script>
+</body>
+</html>

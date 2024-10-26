@@ -1,0 +1,548 @@
+<! DOCTYPE html>  
+<html lang="en" >  
+<head>  
+    <meta charset="UTF-8">  
+    <title> Sheet Page </title>  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
+
+    <style>  
+      body {  
+        background: linear-gradient(to bottom left, white 70%, lightblue);
+        font-family: Roboto, sans-serif;
+        }
+    h1 {  
+        color: blue;  
+        padding-bottom: 2rem;  
+        font-weight: bold;  
+    }   
+        a {  
+        color: #333;  
+        }  
+        a:hover {  
+        color: #E8D426;  
+        text-decoration: none;  
+        }  
+        .form-control:focus {  
+            color: #000;  
+            background-color: #fff;  
+            border: 2px solid #E8D426;  
+            outline: 0;  
+            box-shadow: none;  
+        }  
+        .btn {  
+        
+        border: #E8D426;  
+        }  
+        .btn:hover {  
+        background: #28a745;  
+        border: #E8D426;  
+        }  
+    </style>  
+</head> 
+<body>  
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2 vertical-nav">
+            <ul class="nav nav-pills flex-column">
+                <br> <br> <br> <br>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/home/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/calc/">Calculate Calories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="http://127.0.0.1:8000/sheet/">View Previous Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://127.0.0.1:8000/passwordchange/">Change Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link logout text-danger" href="#">Logout</a>
+                </li>
+        </ul>
+      </div>
+      <div class="col-lg-10">
+          <br>
+          <h1 style="color:blue;text-align:center">CALORIE TRACKER APPLICATION </h1> 
+          <br>
+          <div class="input-group">
+            <span class="input-group-text">Daily Calorie Tracker</span>
+            <input type="date" class='form-control col-lg-3' id="myDate">
+            <button class ='btn btn-primary col-lg-2' onclick="daywisecalorie()">Get Report</button>
+            <button class ='btn btn-primary col-lg-2 export'> Export to Excel</button>
+            <button class ='btn btn-primary col-lg-2 pdfexport'> Export to PDF</button>
+            <a class="btn btn-primary col-lg-2" href="http://127.0.0.1:8000/daywisechartpage/" role="button">Chart</a>     
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-text">Weekly Calorie Tracker</span>
+          <input type="week" class='form-control col-lg-3' id="week" name="week">
+          <button class="btn btn-primary col-lg-2" onclick="weekwisecalorie()">Get Report</button>
+          <button class="btn btn-primary col-lg-2 exportweek">Export to Excel</button>
+          <button class="btn btn-primary col-lg-2 pdfexportweek">Export to PDF</button>
+          <a class="btn btn-primary col-lg-2 chartweek" role="button">Chart</a>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-text">Monthly Calorie Tracker</span>
+          <input type="month" class='form-control col-lg-3' id="month" name="month">
+          <button class="btn btn-primary col-lg-2" onclick="monthwisecalorie()">Get Report</button>
+          <button class="btn btn-primary col-lg-2 exportmonth">Export to Excel</button>
+          <button class="btn btn-primary col-lg-2 pdfexportmonth">Export to PDF</button>
+          <a class="btn btn-primary col-lg-2 chartmonth" role="button">Chart</a>
+        </div>
+
+        <br> 
+        <div class="input-group">
+          <span class="input-group-text col-sm-3 col-md-3 col-lg-4">Total calories consumed on selected date in cal:</span>
+          {% comment %} <div class="col-md-9"> {% endcomment %}
+            <p id="p"></p>
+          {% comment %} </div> {% endcomment %}
+        </div>
+        
+        {% comment %} <div class="row">
+            <div class="col-sm-3 col-md-3 col-lg-3"> </div>
+            <div class="" style="text-align:left"> 
+                <b>Total calories consumed on selected date in cal:  </b>
+            </div>
+            <div class="col-sm-3 col-md-4 col-lg-2" style="text-align:center">
+                <p id="p"></p>
+            </div> 
+        </div> 
+        <br>
+     {% endcomment %}
+
+        <table class="table table-striped" id="caltable">
+          <thead>
+              <tr>
+                  <th scope="col">Sl No.</th>
+                  <th scope="col">Item Name</th> 
+                  <th scope="col">Quantity Consumed (grams) </th>
+                  <th scope="col">Calories (cal)</th>
+                  <th scope="col">Date</th>
+              </tr>
+          </thead>
+          <tbody id="tableBody"> </tbody>
+      </table>
+    </div>
+        </div>
+      </div>
+</div>
+
+
+
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+      
+    <script>
+    //LOGOUT
+      $('.logout').click(function(){
+        var confirmation = confirm("Are you sure you want to logout?");
+        if (confirmation) {
+          $.ajax({
+            url: 'http://127.0.0.1:8000/logout/',
+            type: 'GET',
+            success:  function (Response) {
+                      alert(Response.message);
+                      window.localStorage.removeItem('refreshToken');
+                      window.localStorage.removeItem('accessToken');
+                      window.location.href='http://127.0.0.1:8000/loginpage/';
+            }
+          }) 
+        }
+      });
+   
+        function calc() {
+            var x = document.getElementById("P").innerHTML;
+            document.getElementById("p").innerHTML = x;
+            document.getElementById("p").style.color = "green";
+        }
+
+
+      function daywisecalorie() {
+        var date;
+        date = document.getElementById("myDate").value;
+        window.localStorage.setItem("date", date);
+        email = window.localStorage.getItem("email")
+        console.log(date)
+        $.ajax({
+          url: 'http://127.0.0.1:8000/search/'+email+'/',
+          type: 'GET',
+          success:  function (Response) {
+
+                        id=Response[0][0];      
+                        window.localStorage.setItem("id", id);        
+                        console.log(id);
+                        user=window.localStorage.getItem("id");
+                        var data = {
+                          user:user,
+                          date:date,
+                       }
+                        $.ajax({
+                          url:'http://127.0.0.1:8000/consumed/searchbyday/',
+                          type: 'GET',
+                          data: data,
+  
+                          success:  function (Response) {
+                                        consumed_list=Response.consumed_list;
+                                        net_calories = Response.net_calories
+                                        document.getElementById("p").innerHTML = net_calories;
+                                        document.getElementById("p").style.color = "green";
+                                        tableDataDisplay(consumed_list);	   
+                          },
+                          error: function (response) {
+                            console.log(response);
+                          }
+                        })
+          }
+        })
+      }
+
+
+      function weekwisecalorie() {
+          var week_yr;
+          week_yr = document.getElementById("week").value;
+          const year = week_yr.slice(0, 4);
+          const week = week_yr.slice(-2);
+          email = window.localStorage.getItem("email")
+       
+          $.ajax({
+            url: 'http://127.0.0.1:8000/search/'+email+'/',
+            type: 'GET',
+            success:  function (Response) {
+
+                          id=Response[0][0];      
+                          window.localStorage.setItem("id", id);        
+                          console.log(id);
+                          user=window.localStorage.getItem("id");
+                          $.ajax({
+                              url:'http://127.0.0.1:8000/consumed/searchbyweek/',
+                              type: 'GET',
+                              data: {
+                                user:user,
+                                year:year,
+                                week:week,
+                                },
+    
+                          success:  function (Response) {
+                                        consumed_list=Response.consumed_list;
+                                        net_calories = Response.net_calories
+                                        document.getElementById("p").innerHTML = net_calories;
+                                        document.getElementById("p").style.color = "green";
+                                        tableDataDisplay(consumed_list);	   
+                          },
+                          error: function (response) {
+                            console.log(response);
+                          }
+                        })
+          }
+        })
+      }
+
+      function monthwisecalorie() {
+
+          var month_yr;
+          month_yr = document.getElementById("month").value;
+          console.log(month_yr)
+          console.log(typeof(month_yr))
+          const year = month_yr.slice(0, 4);
+          console.log(year); 
+          const month = month_yr.slice(-2);
+          console.log(month); 
+          email = window.localStorage.getItem("email")
+
+          $.ajax({
+            url: 'http://127.0.0.1:8000/search/'+email+'/',
+            type: 'GET',
+            success:  function (Response) {
+
+                          id=Response[0][0];      
+                          window.localStorage.setItem("id", id);        
+                          console.log(id);
+                          user=window.localStorage.getItem("id");
+                          $.ajax({
+                            url:'http://127.0.0.1:8000/consumed/searchbymonth/',
+                            type: 'GET',
+                            data: {
+                              user:user,
+                              year:year,
+                              month:month,
+                              },
+  
+                          success:  function (Response) {
+                                        console.log(Response);
+                                        consumed_list=Response.consumed_list;
+                                        console.log(consumed_list)
+                                        console.log(consumed_list[0].quantity )
+                                        net_calories = Response.net_calories
+                                        console.log(net_calories)
+                                        document.getElementById("p").innerHTML = net_calories;
+                                        document.getElementById("p").style.color = "green";
+                                        tableDataDisplay(consumed_list);	   
+                          },
+                          error: function (response) {
+                            console.log(response);
+                          }
+                        })
+          }
+        })
+      }
+      
+
+      //excel sheet export
+      $('.export').click(function(){
+        user=window.localStorage.getItem("id");
+        date = window.localStorage.getItem("date")
+
+          $.ajax({
+            
+            url: 'http://127.0.0.1:8000/exporttoexcel/',
+            type: 'GET',
+            data: {
+              user:user,
+              date:date,
+              },
+            xhrFields:{
+                responseType: 'blob'
+            },
+            success:  function (Response) {
+                      var blob = new Blob([Response], { type: 'application/vnd.ms- excel' });
+                      var downloadUrl = URL.createObjectURL(blob);
+                      var a = document.createElement("a");
+                      a.href = downloadUrl;
+                      a.download = "calorie.xls";
+                      document.body.appendChild(a);
+                      a.click();   
+            },
+            error: function (response) {
+              alert("no data found")
+            }
+          }) 
+      });
+
+      //excel sheet export month
+      $('.exportmonth').click(function(){
+          var month_yr;
+          month_yr = document.getElementById("month").value;
+          const year = month_yr.slice(0, 4);
+          const month = month_yr.slice(-2);
+          user=window.localStorage.getItem("id");
+
+          $.ajax({
+            
+            url: 'http://127.0.0.1:8000/exporttoexcel/month/',
+            type: 'GET',
+            data: {
+              user:user,
+              year:year,
+              month:month,
+              },
+            xhrFields:{
+                responseType: 'blob'
+            },
+            success:  function (Response) {
+                      var blob = new Blob([Response], { type: 'application/vnd.ms- excel' });
+                      var downloadUrl = URL.createObjectURL(blob);
+                      var a = document.createElement("a");
+                      a.href = downloadUrl;
+                      a.download = "calorie.xls";
+                      document.body.appendChild(a);
+                      a.click();   
+            },
+            error: function (response) {
+              alert("no data found")
+            }
+          }) 
+      });
+
+
+      //excel sheet export weekwise
+      $('.exportweek').click(function(){
+
+          var week_yr;
+          week_yr = document.getElementById("week").value;
+          const year = week_yr.slice(0, 4);
+          const week = week_yr.slice(-2);
+          user=window.localStorage.getItem("id");
+          
+            $.ajax({  
+              url: 'http://127.0.0.1:8000/exporttoexcel/week/',
+              type: 'GET',
+              data: {
+                user:user,
+                year:year,
+                week:week,
+                },
+              xhrFields:{
+                  responseType: 'blob'
+              },
+              success:  function (Response) {
+                            var blob = new Blob([Response], { type: 'application/vnd.ms- excel' });
+                            var downloadUrl = URL.createObjectURL(blob);
+                            var a = document.createElement("a");
+                            a.href = downloadUrl;
+                            a.download = "calorie.xls";
+                            document.body.appendChild(a);
+                            a.click();   
+              },
+              error: function (response) {
+                alert("no data found")
+              }
+          }) 
+      });
+
+      //pdf export
+      $('.pdfexport').click(function(){
+        user=window.localStorage.getItem("id");
+        date = window.localStorage.getItem("date")
+
+          $.ajax({
+            
+            url: 'http://127.0.0.1:8000/pdf/date/',
+            type: 'GET',
+            data: {
+              user:user,
+              date:date,
+              },
+            xhrFields:{
+                responseType: 'blob'
+            },
+            success:  function (Response) {
+              console.log("hai")
+                          var blob = new Blob([Response], { type: 'application/pdf' });
+                          var downloadUrl = URL.createObjectURL(blob);
+                          var a = document.createElement("a");
+                          a.href = downloadUrl;
+                          a.download = "foodlist.pdf";
+                          document.body.appendChild(a);
+                          a.click();   
+            },
+            error: function (response) {
+              alert("no data found")
+            }
+          }) 
+      });
+
+      //pdf export month
+    $('.pdfexportmonth').click(function(){
+      var month_yr;
+      month_yr = document.getElementById("month").value;
+      const year = month_yr.slice(0, 4);
+      const month = month_yr.slice(-2);
+      user=window.localStorage.getItem("id");
+
+      $.ajax({
+        
+        url: 'http://127.0.0.1:8000/pdf/month/',
+        type: 'GET',
+        data: {
+          user:user,
+          year:year,
+          month:month,
+          },
+        xhrFields:{
+            responseType: 'blob'
+        },
+        success:  function (Response) {
+                      var blob = new Blob([Response], { type: 'application/pdf' });
+                      var downloadUrl = URL.createObjectURL(blob);
+                      var a = document.createElement("a");
+                      a.href = downloadUrl;
+                      a.download = "foodlist.pdf";
+                      document.body.appendChild(a);
+                      a.click();   
+        },
+        error: function (response) {
+          alert("no data found")
+        }
+      }) 
+  });
+
+
+  //pdf export week
+  $('.pdfexportweek').click(function(){
+
+    var week_yr;
+    week_yr = document.getElementById("week").value;
+    const year = week_yr.slice(0, 4);
+    const week = week_yr.slice(-2);
+    user=window.localStorage.getItem("id");
+    
+      $.ajax({  
+        url: 'http://127.0.0.1:8000/pdf/week/',
+        type: 'GET',
+        
+        data: {
+          user:user,
+          year:year,
+          week:week,
+          },
+        xhrFields:{
+            responseType: 'blob'
+        },
+        success:  function (Response) {
+                      var blob = new Blob([Response], { type: 'application/pdf' });
+                      var downloadUrl = URL.createObjectURL(blob);
+                      var a = document.createElement("a");
+                      a.href = downloadUrl;
+                      a.download = "foodlist.pdf";
+                      document.body.appendChild(a);
+                      a.click();      
+        },
+        error: function (response) {
+          alert("no data found")
+        }
+    }) 
+});
+
+
+
+$('.chartweek').click(function(){
+  var week_yr;
+  week_yr = document.getElementById("week").value;
+  const year = week_yr.slice(0, 4);
+  const week = week_yr.slice(-2);
+  console.log(year)
+  console.log(week)
+  window.localStorage.setItem("year", year);      
+  window.localStorage.setItem("week", week);      
+  window.location.href= "http://127.0.0.1:8000/weekwisechartpage/"
+});
+
+$('.chartmonth').click(function(){
+  var month_yr;
+  month_yr = document.getElementById("month").value;
+  const year = month_yr.slice(0, 4);
+  const month = month_yr.slice(-2);
+  window.localStorage.setItem("year", year);      
+  window.localStorage.setItem("month", month);      
+  window.location.href= "http://127.0.0.1:8000/monthwisechartpage/"
+});
+
+
+      function tableDataDisplay(response) {
+                
+        var tableData = "";
+        console.log(response)
+        for (var i=0; i<response.length; i++) {
+
+            tableData+= '<tr>';      
+            tableData+= '<td>'+ [i+1] + '</td>';       
+            tableData+= '<td>'+response[i].food + '</td>';
+            tableData+= '<td>'+response[i].quantity  + '</td>';
+            tableData+= '<td>'+response[i].calories + '</td>';
+            tableData+= '<td>'+response[i].date + '</td>';
+            tableData+= '</tr>';
+            }
+            document.getElementById("tableBody").innerHTML=tableData;
+        }
+        
+
+      
+    </script>
+</body>
+</html>

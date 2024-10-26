@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Issuance</title>
+</head>
+<body>
+    <h1>Hello {{ user_name }},</h1>
+    <p>Thank you for Booking the event!</p>
+    <p>Your payment has been successfully received and processed. Your transaction id is {{ transaction_id}}. Your ticket has been successfully generated for the upcoming event. Your ticket details are:</p>
+    <p>Event Name: {{ event_name }}</p>
+    <p>Start Time: {{ event_start_time }}</p>
+    <p>End Time: {{ event_end_time }}</p>
+    <p>Seats Numbers Booked: {{ seats_booked }}</p>
+    <p>Total no:of seats booked: {{ total_booked_seats }}</p>
+    <p>Total Amount: {{ total_amount }}</p>
+    <p>Enjoy the Event!</p>
+</body>
+</html>

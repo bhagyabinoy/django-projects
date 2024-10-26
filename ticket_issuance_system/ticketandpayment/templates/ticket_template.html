@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style>        
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+
+    .ticket-header {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    .ticket-info {
+        margin-bottom: 10px;
+    }
+
+    .ticket-info label {
+        font-weight: bold;
+    }
+
+    .ticket-info span {
+        margin-left: 10px;
+    }
+
+    .ticket-footer {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .ticket-footer p {
+        font-size: 12px;
+    }
+
+    .ticket-footer p a {
+        color: #007bff;
+        text-decoration: none;
+    }
+</style></style>
+</head>
+<body>
+
+    <div class="ticket">
+
+        <div class="ticket-header">Ticket</div>
+        <div class="ticket-info">
+            <label>Name:</label>
+            <span>{{ user_name }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Transaction ID:</label>
+            <span>{{ transaction_id }}</span>
+        </div>
+
+        <div class="ticket-info">
+            <label>Event Name:</label>
+            <span>{{ event_name }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Total Booked Seats:</label>
+            <span>{{ total_booked_seats }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Seats Numbers:</label>
+            <span>{{ seats_booked }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Event Start Time:</label>
+            <span>{{ event_start_time }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Event End Time:</label>
+            <span>{{ event_end_time }}</span>
+        </div>
+        <div class="ticket-info">
+            <label>Total Amount:</label>
+            <span>{{ total_amount }}</span>
+        </div>
+
+        <div class="ticket-footer">
+            <p>Thank you for booking with us!</p>
+            <p><a href="http://127.0.0.1:8000/">Visit our website for more information</a></p>
+        </div>
+    </div>
+</body>
+</html>

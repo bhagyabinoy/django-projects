@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Chat Room</title>
+  
+  <style>
+    .chat-message {
+      width: 100%;
+      border: 2px solid palegreen;
+      border-radius: 6px;
+      margin: 2px 0px;
+    }
+    .card{
+      max-width: initial;
+
+    }
+    .card-block{
+      padding: 28px 20px;
+    }
+    .jumbotron{
+      background-color: white;
+    }
+    .alert {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .links {
+      display: flex;
+      align-items: center;
+    }
+    
+    .spacer {
+      margin: 0 10px;
+    }
+    
+  
+  </style>
+</head>
+<body>
+
+  <div class="alert alert-danger" role="alert">
+    <div>
+      Hi <b id="welcomeMessage"></b>, Welcome to Chatapp
+    </div>
+    <div class="links">
+      <a href="http://127.0.0.1:8000/chat/chatapp_home/">Back</a>
+      <span class="spacer"></span>
+      <a class="logout text-danger" href="#">Logout</a>
+    </div>
+  </div>
+  <br/>    
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-12">
+            <div class="alert alert-info d-flex justify-content-between" role="alert">
+              <h5 id="roomname"></h5>
+              <a class="logout text-danger" href="#">Logout</a>
+            </div>
+            <form>
+              <div class="form-group">
+                <div class="jumbotron" id="chatbox" style="padding: 4px 2px; max-height: 300px; overflow-y: scroll;">
+              </div>
+                <br/>
+                <div class="form-group" style="width: 100%;">
+                    <input class="form-control" placeholder="Enter text here" id="my_input" type="text" required><br/>
+                </div>
+                <br/>
+                <input class="btn btn-primary btn-lg btn-block" id="submit_button" type="button" value="Send">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script>
+  $(document).ready(function() {
+  
+    var userId = localStorage.getItem('userId');
+    var roomslug = localStorage.getItem('roomSlug');
+    console.log(roomslug,"-------------room slug--------");
+    console.log(userId,"-------userId-------");
+    $.ajax({
+      url: 'http://127.0.0.1:8000/detail/' + userId + '/',
+      method: 'GET',
+      success: function(response) {
+
+        var firstName = response.first_name;
+        var lastName = response.last_name;    
+        var roomname = response.room_name;   
+        $('#welcomeMessage').text(firstName + ' ' + lastName);
+        
+      },
+      error: function(response) {
+        console.log("something went wrong");
+      }
+    });
+
+    $.ajax({
+      url: 'http://127.0.0.1:8000/chat/messages/' + roomslug + '/',
+      method: 'GET',
+      success: function (response) {
+        console.log(response);
+        console.log(response.room_name);
+        var room_name = response.room_name;
+        localStorage.setItem('room_name', response.room_name);
+        var room_name = localStorage.getItem('room_name');
+        console.log(room_name, "----------------------room_name------------------");
+        $('#roomname').text(room_name);
+    
+        // Appending the HTML code
+        if (response.messages.length > 0) {
+          var chatboxHtml = '<div class="jumbotron" id="chatbox" style="padding: 4px 2px; max-height: 300px; overflow-y: scroll;">';
+          for (var i = 0; i < response.messages.length; i++) {
+            var message = response.messages[i];
+            console.log("message: " + message.content);
+            console.log("user: " + message.user)
+            var userId = localStorage.getItem('userId');
+            var userClass = (message.user.id == userId) ? 'text-right' : 'text-left';
+            console.log(message.user.id);
+            console.log(userId)
+            var created_on = message.created_on;
+            var messageHtml = '<div class="chat-message ' + userClass + '">';
+            messageHtml += '<b>' + message.user.first_name +" "+message.user.last_name + '</b> : ' + message.content + '<br>';
+            messageHtml += '<span class="timestamp">' + created_on + '</span>';
+            messageHtml += '</div>';
+            chatboxHtml += messageHtml;
+          }
+          chatboxHtml += '</div>';
+          $('#chatbox').replaceWith(chatboxHtml);
+        } else {
+          var noMessagesHtml = '<div class="jumbotron" id="chatbox" style="padding: 4px 2px;"></div>';
+          noMessagesHtml += '<b>No Messages in this Room.</b>';
+          $('#chatbox').replaceWith(noMessagesHtml);
+        }
+      },
+      error: function (response) {
+        console.log("something went wrong");
+      }
+    });
+    
+  })
+
+  
+  $('.logout').click(function(){
+    var confirmation = confirm("Are you sure you want to logout?");
+    if (confirmation) {
+    $.ajax({
+        url: 'http://127.0.0.1:8000/logout/',
+        type: 'GET',
+        success:  function (Response) {
+            alert(Response.message);;
+            window.localStorage.removeItem('refreshToken');
+            window.localStorage.removeItem('accessToken');
+            window.location.href='http://127.0.0.1:8000/loginpage/';
+        }
+    }) 
+    }
+});
+  const chatbox = document.querySelector("#chatbox");
+
+  function scrollToBottom() {
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+  scrollToBottom();
+
+ 
+    var roomslug = localStorage.getItem('roomSlug');
+    var socket = new WebSocket('ws://127.0.0.1:8000/ws/chat/');
+    //var chatSocket = new WebSocket('ws://127.0.0.1/ws/chat/roomone/');
+    //var chatSocket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + roomslug + '/');
+    console.log(chatSocket);
+    chatSocket.onopen = function (e) {
+      console.log("The connection was setup successfully !");
+    };
+    chatSocket.onclose = function (e) {
+      console.log("Something unexpected happened !");
+    };
+
+    document.querySelector("#my_input").focus();
+    document.querySelector("#my_input").onkeyup = function (e) {
+      if (e.keyCode == 13) {
+        e.preventDefault();
+        document.querySelector("#submit_button").click();
+      }
+    };
+    document.querySelector("#submit_button").onclick = function (e) {
+      var messageInput = document.querySelector(
+        "#my_input"
+      ).value;
+
+      if(messageInput.length == 0)
+        {
+            alert("Add some Input First Or Press Send Button!")
+        }
+        else
+        {
+          var userId = localStorage.getItem('userId');
+          chatSocket.send(JSON.stringify({ message : messageInput, user : userId,roomslug : roomslug}));    
+        }
+      
+    };
+
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      var div = document.createElement("div");
+      div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
+
+      // Add class based on user authentication
+      if (data.username === "{{ request.user.username }}") {
+        div.classList.add("chat-message", "text-right");
+      } else {
+        div.classList.add("chat-message", "text-left");
+      }
+
+      document.querySelector("#my_input").value = "";
+      document.querySelector("#chatbox").appendChild(div);
+      scrollToBottom();
+    };
+</script>
+
+</body>
+</html> 
